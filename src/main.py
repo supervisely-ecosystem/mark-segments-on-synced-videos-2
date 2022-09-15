@@ -15,8 +15,6 @@ load_dotenv(os.path.expanduser("~/supervisely.env"))
 api = sly.Api()
 
 # @TODO:
-# reimplement project / dataset envs on agent + documentation
-# Dataset Thumbnail
 # Select tag
 # emoji as step number 1️⃣  - https://www.npmjs.com/package/number-to-emoji
 
@@ -31,6 +29,7 @@ api = sly.Api()
 # video selector - simple selector - or searchable table with some marks - like started, number of tags, etc? - collapsable card with hide option
 # input_dataset = os.environ[""]
 # if multiple users use the same app with the same project
+# height: 100%;
 
 dataset_id = int(os.environ["context.datasetId"])
 dataset_info = api.dataset.get_info_by_id(dataset_id, raise_error=True)
@@ -44,7 +43,6 @@ input_dataset = Card(
 input_tag = Card(
     "Select Tag",
     "Select key-value(str) tag for labeling",
-    content=ProjectThumbnail(project_info),
 )
 
 settings = Container(
@@ -63,10 +61,14 @@ input_cards = Container(
 )
 
 card = Card("Tagging", "Description")
-layout = Container(widgets=[settings, input_cards, card], direction="vertical", gap=15)
+layout = Container(
+    widgets=[settings, input_cards, card],
+    direction="vertical",
+    gap=15,
+)
 
 
-app = sly.Application(layout=layout)
+app = sly.Application(layout=layout)  # input_tag)  # layout)
 
 # from starlette.responses import FileResponse
 # @app.get('/favicon.ico')
