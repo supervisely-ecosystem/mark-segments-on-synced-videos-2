@@ -5,5 +5,9 @@
   "description": "Tag segments (begin and end) on single or multiple videos in dual-panel view",
   "categories": ["videos", "labeling"],
   "icon": "some url",
-  "poster": "some url"
+  "poster": "some url",
+  "context_menu": {
+    "target": ["videos_dataset"]
+  },
+  "min_agent_version": "6.6.6"
 }
