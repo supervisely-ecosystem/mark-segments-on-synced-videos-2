@@ -6,7 +6,9 @@ from supervisely.app.widgets import (
     Container,
     Video,
     DatasetThumbnail,
-    ProjectThumbnail,
+    SelectTagMeta,
+    Input,
+    Button,
 )
 
 # for convenient debug, has no effect in production
@@ -40,9 +42,16 @@ input_dataset = Card(
     "Label video or pair of videos in current dataset",
     content=DatasetThumbnail(project_info, dataset_info),
 )
+
+select_tag = SelectTagMeta(
+    show_label=False, allowed_types=[sly.TagValueType.ANY_STRING]
+)
+input_name = Input("my-event")
+new_tag_btn = Button("Create new", button_type="text")
+
+
 input_tag = Card(
-    "Select Tag",
-    "Select key-value(str) tag for labeling",
+    "Select Tag", "Select key-value(str) tag for labeling", content=select_tag
 )
 
 settings = Container(
@@ -61,12 +70,7 @@ input_cards = Container(
 )
 
 card = Card("Tagging", "Description")
-layout = Container(
-    widgets=[settings, input_cards, card],
-    direction="vertical",
-    gap=15,
-)
-
+layout = Container(widgets=[settings, input_cards, card], direction="vertical", gap=15)
 
 app = sly.Application(layout=layout)  # input_tag)  # layout)
 
