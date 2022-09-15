@@ -1,0 +1,9 @@
+{
+  "entrypoint": "python -m uvicorn src.main:m.app --host 0.0.0.0 --port 8000",
+  "port": 8000,
+  "name": "Mark segments on synced videos",
+  "description": "Tag segments (begin and end) on single or multiple videos in dual-panel view",
+  "categories": ["videos", "labeling"],
+  "icon": "some url",
+  "poster": "some url"
+}

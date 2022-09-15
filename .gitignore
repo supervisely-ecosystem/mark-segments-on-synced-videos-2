@@ -1,0 +1,6 @@
+.venv
+.DS_Store
+supervisely
+*.pkl
+__pycache__
+results
