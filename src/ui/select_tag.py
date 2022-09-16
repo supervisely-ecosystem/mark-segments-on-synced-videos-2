@@ -86,21 +86,41 @@ def cancel_tag():
     existing_tag_layout.show()
 
 
+# from supervisely.app.fastapi.request import Request
+
+# route_path = finish_step_btn.get_route_path(Button.Routes.CLICK)
+# server = finish_step_btn._sly_app.get_server()
+# finish_step_btn.add_route(server, Button.Routes.CLICK)
+
+
+# @server.post(route_path)
+# def finish_step(r: Request):
+#     print(123)
+
+
 @finish_step_btn.click
 def finish_step():
-    tag_name = select_tag.get_selected_name()
-    print(tag_name)
-    if tag_name is None:
-        raise DialogWindowError(
-            title="Tag is not selected",
-            description="Please, select existing tag or create a new one before start labeling",
-        )
-    select_tag.disable()
-    create_tag_btn.disable()
-    finish_step_btn.hide()
-    change_tag_btn.show()
-    tag_selected_text.show()
-    select_videos.card.unlock()
+    # request: sly.app.Request
+    print(123)
+
+
+#     # print(request.context)
+#     # request: sly.app.Request
+
+#     return
+#     tag_name = select_tag.get_selected_name()
+#     print(tag_name)
+#     if tag_name is None:
+#         raise DialogWindowError(
+#             title="Tag is not selected",
+#             description="Please, select existing tag or create a new one before start labeling",
+#         )
+#     select_tag.disable()
+#     create_tag_btn.disable()
+#     finish_step_btn.hide()
+#     change_tag_btn.show()
+#     tag_selected_text.show()
+#     select_videos.card.unlock()
 
 
 @change_tag_btn.click

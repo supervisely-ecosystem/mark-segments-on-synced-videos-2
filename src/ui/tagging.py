@@ -1,5 +1,6 @@
 import supervisely as sly
 from supervisely.app.exceptions import DialogWindowError
+from supervisely.app.fastapi.request import Request
 from supervisely.app.widgets import (
     Card,
     Container,
@@ -38,5 +39,11 @@ layout = Container(
 
 
 @start_tagging_btn.click
-def start_tagging():
-    select_videos.card.collapse()
+def start_tagging(request: Request):
+    # get user api object
+    # get all video1 tags for selected tag meta
+    # get all video2 tags for selected tag meta
+    # match tags, skip (remove?) all unmatched pairs
+    # show table with pairs with buttons (delete, show)
+    pass
+    # select_videos.card.collapse()
