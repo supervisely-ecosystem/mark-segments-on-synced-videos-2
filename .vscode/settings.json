@@ -17,5 +17,9 @@
   "debug.inlineValues": "off",
   "[python]": {
     "editor.formatOnPaste": false
-  }
+  },
+  "python.formatting.blackArgs": [
+    "--line-length",
+    "100"
+  ]
 }
