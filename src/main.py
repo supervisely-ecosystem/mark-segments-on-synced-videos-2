@@ -15,6 +15,8 @@ import src.globals as g
 import src.ui.input_dataset as input_dataset
 import src.ui.select_tag as select_tag
 import src.ui.select_videos as select_videos
+import src.ui.left_video as left_video
+import src.ui.right_video as right_video
 
 # @TODO:
 # https://yaytext.com/emoji/keycaps/
@@ -37,14 +39,10 @@ settings = Container(
     [input_dataset.layout, select_tag.layout], direction="horizontal", gap=15, fractions=[1, 1]
 )
 
-vid1 = 3267369
-vid2 = 3267370
-v1 = Video(vid1)
-v2 = Video(vid2)
-card1 = Card("Input video #1", "Select first video", content=v1)
-card2 = Card("Input video #2", "Select second video", content=v2)
 
-input_cards = Container(widgets=[card1, card2], direction="horizontal", gap=15, fractions=[1, 1])
+input_cards = Container(
+    widgets=[left_video.card, right_video.card], direction="horizontal", gap=15, fractions=[1, 1]
+)
 
 card = Card("Tagging", "Description")
 layout = Container(
@@ -53,3 +51,5 @@ layout = Container(
 
 app = sly.Application(layout=layout)
 select_videos.build_table()
+
+# https://github.com/pvoznyuk/short-numbers
