@@ -15,4 +15,7 @@
   },
   "python.formatting.provider": "black",
   "debug.inlineValues": "off",
+  "[python]": {
+    "editor.formatOnPaste": false
+  }
 }

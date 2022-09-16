@@ -1,24 +1,25 @@
 import os
 from dotenv import load_dotenv
+
+# for convenient debug, has no effect in production
+load_dotenv("local.env")
+load_dotenv(os.path.expanduser("~/supervisely.env"))
+
 import supervisely as sly
 from supervisely.app.widgets import (
     Card,
     Container,
     Video,
     DatasetThumbnail,
-    SelectTagMeta,
-    Input,
-    Button,
 )
+from src.ui.select_tag import tag_layout
+import src.globals as g
 
-# for convenient debug, has no effect in production
-load_dotenv("local.env")
-load_dotenv(os.path.expanduser("~/supervisely.env"))
 api = sly.Api()
 
 # @TODO:
-# Select tag
-# emoji as step number 1️⃣  - https://www.npmjs.com/package/number-to-emoji
+# https://yaytext.com/emoji/keycaps/
+# emoji as step number 1️⃣
 
 # 1. input dataset  # 2. select tag
 # Select pair of videos - you can choose single video for dual layout
@@ -31,31 +32,17 @@ api = sly.Api()
 # video selector - simple selector - or searchable table with some marks - like started, number of tags, etc? - collapsable card with hide option
 # input_dataset = os.environ[""]
 # if multiple users use the same app with the same project
-# height: 100%;
 
-dataset_id = int(os.environ["context.datasetId"])
-dataset_info = api.dataset.get_info_by_id(dataset_id, raise_error=True)
-project_info = api.project.get_info_by_id(dataset_info.project_id)
 
 input_dataset = Card(
     "Input dataset",
     "Label video or pair of videos in current dataset",
-    content=DatasetThumbnail(project_info, dataset_info),
+    content=DatasetThumbnail(g.project_info, g.dataset_info),
 )
 
-select_tag = SelectTagMeta(
-    show_label=False, allowed_types=[sly.TagValueType.ANY_STRING]
-)
-input_name = Input("my-event")
-new_tag_btn = Button("Create new", button_type="text")
-
-
-input_tag = Card(
-    "Select Tag", "Select key-value(str) tag for labeling", content=select_tag
-)
 
 settings = Container(
-    [input_dataset, input_tag], direction="horizontal", gap=15, fractions=[1, 1]
+    [input_dataset, tag_layout], direction="horizontal", gap=15, fractions=[1, 1]
 )
 
 vid1 = 3267369
@@ -73,8 +60,3 @@ card = Card("Tagging", "Description")
 layout = Container(widgets=[settings, input_cards, card], direction="vertical", gap=15)
 
 app = sly.Application(layout=layout)  # input_tag)  # layout)
-
-# from starlette.responses import FileResponse
-# @app.get('/favicon.ico')
-# def favicon():
-#     return FileResponse(os.path.join(app_root_directory, 'static', 'favicon.png'))
