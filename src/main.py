@@ -6,11 +6,7 @@ load_dotenv("local.env")
 load_dotenv(os.path.expanduser("~/supervisely.env"))
 
 import supervisely as sly
-from supervisely.app.widgets import (
-    Card,
-    Container,
-    Video,
-)
+from supervisely.app.widgets import Card, Container
 import src.globals as g
 import src.ui.input_dataset as input_dataset
 import src.ui.select_tag as select_tag
@@ -28,7 +24,7 @@ import src.ui.right_video as right_video
 # start labeling button
 # finish labeling button
 
-# save user_id in final tagging
+# save user_id in final tagging (use user api token to tag videos)
 # if multiple users use the same app with the same project
 
 
@@ -43,7 +39,7 @@ input_cards = Container(
 
 card = Card("Tagging", "Description")
 layout = Container(
-    widgets=[settings, select_videos.layout, input_cards, card], direction="vertical", gap=15
+    widgets=[settings, select_videos.card, input_cards, card], direction="vertical", gap=15
 )
 
 app = sly.Application(layout=layout)

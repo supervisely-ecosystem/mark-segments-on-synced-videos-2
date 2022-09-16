@@ -9,6 +9,6 @@ card = Card(
     "📹 Input video #2",
     "Navigate and tag segments endings on this video",
     content=player,
-    lock_message='Slect video in table by clicking 👆 "SET RIGHT" button',
+    lock_message='Slect video in table by clicking 👆 "SET RIGHT" button on step 3️⃣',
 )
 card.lock()

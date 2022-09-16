@@ -3,19 +3,22 @@ import supervisely as sly
 from supervisely.app.exceptions import DialogWindowError
 from supervisely.app.widgets import Card, Container, SelectTagMeta, Input, Button, Flexbox, Table
 import src.globals as g
-
+import src.ui.left_video as left_video
+import src.ui.right_video as right_video
 
 columns = ["id", "video", "duration (sec)", "frames", "set left", "set right", "processed"]
 lines = None
 
 table = Table(fixed_cols=2, width="100%")
 
-layout = Card(
-    "3️⃣ Select left and right video",
+card = Card(
+    "Step 3️⃣  Select left and right video",
     "Select different videos for left and right panels. To mark segments on single video just select same video for both panels",
     collapsable=True,
+    lock_message="Select labeling tag on step 2️⃣",
     content=table,
 )
+card.lock()
 
 
 def build_table():
@@ -46,8 +49,11 @@ def build_table():
 def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
     if datapoint.button_name is None:
         return
-    print(datapoint.button_name)
+    video_id = datapoint.row["id"]
+    g.api.video.get_info_by_id(video_id)
     if datapoint.button_name == "set left":
-        pass
+        left_video.player.set_video(video_id)
+        left_video.card.unlock()
     elif datapoint.button_name == "set right":
-        pass
+        right_video.player.set_video(video_id)
+        right_video.card.unlock()
