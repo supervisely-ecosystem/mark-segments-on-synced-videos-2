@@ -10,11 +10,11 @@ from supervisely.app.widgets import (
     Card,
     Container,
     Video,
-    DatasetThumbnail,
 )
 import src.globals as g
 import src.ui.input_dataset as input_dataset
 import src.ui.select_tag as select_tag
+import src.ui.select_videos as select_videos
 
 # @TODO:
 # https://yaytext.com/emoji/keycaps/
@@ -47,6 +47,9 @@ card2 = Card("Input video #2", "Select second video", content=v2)
 input_cards = Container(widgets=[card1, card2], direction="horizontal", gap=15, fractions=[1, 1])
 
 card = Card("Tagging", "Description")
-layout = Container(widgets=[settings, input_cards, card], direction="vertical", gap=15)
+layout = Container(
+    widgets=[settings, select_videos.layout, input_cards, card], direction="vertical", gap=15
+)
 
-app = sly.Application(layout=layout)  # input_tag)  # layout)
+app = sly.Application(layout=layout)
+select_videos.build_table()
