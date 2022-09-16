@@ -13,6 +13,7 @@ import src.ui.select_tag as select_tag
 import src.ui.select_videos as select_videos
 import src.ui.left_video as left_video
 import src.ui.right_video as right_video
+import src.ui.tagging as tagging
 
 # @TODO:
 # https://yaytext.com/emoji/keycaps/
@@ -37,9 +38,10 @@ input_cards = Container(
     widgets=[left_video.card, right_video.card], direction="horizontal", gap=15, fractions=[1, 1]
 )
 
-card = Card("Tagging", "Description")
 layout = Container(
-    widgets=[settings, select_videos.card, input_cards, card], direction="vertical", gap=15
+    widgets=[settings, select_videos.card, input_cards, tagging.layout],
+    direction="vertical",
+    gap=15,
 )
 
 app = sly.Application(layout=layout)

@@ -1,10 +1,11 @@
 import pandas as pd
 import supervisely as sly
 from supervisely.app.exceptions import DialogWindowError
-from supervisely.app.widgets import Card, Container, SelectTagMeta, Input, Button, Flexbox, Table
+from supervisely.app.widgets import Card, Table
 import src.globals as g
 import src.ui.left_video as left_video
 import src.ui.right_video as right_video
+import src.ui.tagging as tagging
 
 columns = ["id", "video", "duration (sec)", "frames", "set left", "set right", "processed"]
 lines = None
@@ -57,3 +58,7 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
     elif datapoint.button_name == "set right":
         right_video.player.set_video(video_id)
         right_video.card.unlock()
+
+    if left_video.player.video_id is not None and right_video.player.video_id is not None:
+        tagging.start_tagging_btn.enable()
+        tagging.help_text.hide()
