@@ -28,10 +28,7 @@ import src.ui.right_video as right_video
 # start labeling button
 # finish labeling button
 
-# key-value:str tag has to be already created
 # save user_id in final tagging
-# video selector - simple selector - or searchable table with some marks - like started, number of tags, etc? - collapsable card with hide option
-# input_dataset = os.environ[""]
 # if multiple users use the same app with the same project
 
 
@@ -51,5 +48,3 @@ layout = Container(
 
 app = sly.Application(layout=layout)
 select_videos.build_table()
-
-# https://github.com/pvoznyuk/short-numbers
