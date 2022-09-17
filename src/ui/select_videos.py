@@ -13,7 +13,7 @@ lines = None
 table = Table(fixed_cols=2, width="100%")
 
 card = Card(
-    "Step 3️⃣  Select left and right video",
+    "3️⃣ Select left and right video",
     "Select different videos for left and right panels. To mark segments on single video just select same video for both panels",
     collapsable=True,
     lock_message="Select labeling tag on step 2️⃣",
@@ -54,9 +54,13 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
     g.api.video.get_info_by_id(video_id)
     if datapoint.button_name == "set left":
         left_video.player.set_video(video_id)
+        left_video.preview.set_video_id(video_id)
+        left_video.preview.show()
         left_video.card.unlock()
     elif datapoint.button_name == "set right":
         right_video.player.set_video(video_id)
+        right_video.preview.set_video_id(video_id)
+        right_video.preview.show()
         right_video.card.unlock()
 
     if left_video.player.video_id is not None and right_video.player.video_id is not None:

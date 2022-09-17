@@ -6,7 +6,7 @@ load_dotenv("local.env")
 load_dotenv(os.path.expanduser("~/supervisely.env"))
 
 import supervisely as sly
-from supervisely.app.widgets import Card, Container
+from supervisely.app.widgets import Card, Container, VideoThumbnail
 import src.globals as g
 import src.ui.input_dataset as input_dataset
 import src.ui.select_tag as select_tag
@@ -27,7 +27,6 @@ import src.ui.tagging as tagging
 
 # save user_id in final tagging (use user api token to tag videos)
 # if multiple users use the same app with the same project
-
 
 settings = Container(
     [input_dataset.layout, select_tag.layout], direction="horizontal", gap=15, fractions=[1, 1]
