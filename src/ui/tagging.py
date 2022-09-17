@@ -14,6 +14,8 @@ import src.ui.select_videos as select_videos
 import src.ui.left_video as left_video
 import src.ui.right_video as right_video
 
+PREFIX_BEGIN = "begin-"
+PREFIX_END = "end-"
 
 start_tagging_btn = Button("Start tagging", icon="zmdi zmdi-play")
 mark_segment_btn = Button("Create segment", icon="zmdi zmdi-label")
@@ -21,9 +23,11 @@ mark_segment_btn.hide()
 
 help_text = Text("Please, finish previous steps to start tagging", status="warning")
 help_block = Flexbox([help_text], center_content=True)
-start_tagging_btn.disable()
+# start_tagging_btn.disable()
 
 # segments management
+# TODO: begin <= end (optional)
+# TODO: xx
 
 
 card = Card(
@@ -43,6 +47,16 @@ layout = Container(
 )
 
 
+def _get_frame_from_value(tag: sly.Tag):
+    value = tag.value
+    if tag.value.startswith(PREFIX_BEGIN):
+        pass
+    elif tag.value.startswith(PREFIX_END):
+        pass
+    else:
+        raise
+
+
 @start_tagging_btn.click
 def start_tagging():
     from src.ui.select_tag import get_tag_meta
@@ -51,9 +65,9 @@ def start_tagging():
     # get all video2 tags for selected tag meta
     # match tags, skip (remove?) all unmatched pairs
     # show table with pairs with buttons (delete, show)
-    # left_video.player.video_id
-    left_id = left_video.player.video_id
-    right_id = right_video.player.video_id
+
+    left_id = 3267369  # left_video.player.video_id
+    right_id = 3267370  # right_video.player.video_id
 
     left_ann_json = g.api.video.annotation.download(left_id)
     left_key_id_map = sly.KeyIdMap()
@@ -63,8 +77,9 @@ def start_tagging():
     right_key_id_map = sly.KeyIdMap()
     right_ann = sly.VideoAnnotation.from_json(right_ann_json, g.project_meta, right_key_id_map)
 
-    beginnings = []
+    pairs = {}
 
+    beginnings = []
     working_tag_meta = get_tag_meta()
     for t in left_ann.tags:
         if t.name == working_tag_meta.name:
@@ -74,6 +89,8 @@ def start_tagging():
     for t in right_ann.tags:
         if t.name == working_tag_meta.name:
             endings.append(t)
+
+    pairs = []
 
     select_videos.card.collapse()
     card.unlock()
