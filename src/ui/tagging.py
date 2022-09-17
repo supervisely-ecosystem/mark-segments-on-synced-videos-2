@@ -14,8 +14,6 @@ import src.ui.select_videos as select_videos
 import src.ui.left_video as left_video
 import src.ui.right_video as right_video
 
-# from supervisely.video_annotation.key_id_map import KeyIdMap
-
 
 start_tagging_btn = Button("Start tagging", icon="zmdi zmdi-play")
 mark_segment_btn = Button("Create segment", icon="zmdi zmdi-label")
