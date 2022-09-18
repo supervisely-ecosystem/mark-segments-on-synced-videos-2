@@ -82,8 +82,8 @@ def _build_df():
         lines.append(
             [
                 segment_id,
-                d["begin_tag"].frame_range[0],
-                d["end_tag"].frame_range[0],
+                d["begin_tag"].frame_range[0] if d["begin_tag"] is not None else None,
+                d["end_tag"].frame_range[0] if d["end_tag"] is not None else None,
                 sly.app.widgets.Table.create_button(COL_PREVIEW),
                 sly.app.widgets.Table.create_button(COL_DELETE),
             ]
@@ -161,6 +161,7 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
         left_video.player.set_current_frame(begin_frame)
         right_video.player.set_current_frame(end_frame)
     elif datapoint.button_name == COL_DELETE:
+        # http://78.46.75.100:38589/#tag/Videos/paths/~1videos.tags.remove/delete
         raise NotImplementedError()
 
 
@@ -178,12 +179,23 @@ def get_new_segment_id() -> int:
 @mark_segment_btn.click
 def create_segment():
     segment_id = get_new_segment_id()
+
     left_frame = left_video.player.get_current_frame()
+    left_value = f"{PREFIX_BEGIN}{segment_id}"
     right_frame = right_video.player.get_current_frame()
+    right_value = f"{PREFIX_END}{segment_id}"
 
     # g.api.video.tag.add_tag
+    tag_meta = select_tag.get_tag_meta()
+
     left_tag: sly.Tag = None
+    x = g.api.video.tag.add_tag(
+        tag_meta.sly_id, left_video.player.video_id, left_value, [left_frame, left_frame]
+    )
     right_tag: sly.Tag = None
+    y = g.api.video.tag.add_tag(
+        tag_meta.sly_id, right_video.player.video_id, right_value, [right_frame, right_frame]
+    )
 
     pairs[segment_id]["begin_tag"] = left_tag
     pairs[segment_id]["end_tag"] = right_tag
@@ -195,3 +207,6 @@ def create_segment():
         sly.app.widgets.Table.create_button(COL_PREVIEW),
         sly.app.widgets.Table.create_button(COL_DELETE),
     ]
+
+    # add row to dataframe
+    # sync data changes
