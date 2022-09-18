@@ -42,9 +42,10 @@ cancel_tag_btn = Button("Cancel", button_type="text", icon="zmdi zmdi-close", ic
 new_tag_layout = Flexbox([input_name, save_tag_btn, cancel_tag_btn])
 new_tag_layout.hide()
 
-layout = Card(
+card = Card(
     "2️⃣ Select Tag",
     "Select key-value(str) tag for labeling",
+    collapsable=True,
     content=Container([existing_tag_layout, new_tag_layout], gap=0),
 )
 

@@ -6,6 +6,8 @@ from supervisely.app.exceptions import DialogWindowError
 from supervisely.app.widgets import Card, Container, Button, Flexbox, Container, Text, Table
 
 import src.globals as g
+import src.ui.input_dataset as input_dataset
+import src.ui.select_tag as select_tag
 import src.ui.select_videos as select_videos
 import src.ui.left_video as left_video
 import src.ui.right_video as right_video
@@ -14,7 +16,7 @@ PREFIX_BEGIN = "begin-"
 PREFIX_END = "end-"
 
 start_tagging_btn = Button("Start tagging", icon="zmdi zmdi-play")
-# start_tagging_btn.disable()
+start_tagging_btn.disable()
 
 mark_segment_btn = Button("Create segment", icon="zmdi zmdi-label")
 mark_segment_btn.hide()
@@ -35,7 +37,7 @@ card = Card(
     content=Container([table]),
     lock_message='Press 👆 "START TAGGING" button to create and manage segments',
 )
-# card.lock()
+card.lock()
 
 layout = Container(
     widgets=[
@@ -94,6 +96,8 @@ def start_tagging_ui():
         card.unlock()
         mark_segment_btn.show()
         start_tagging_btn.hide()
+        input_dataset.card.collapse = True
+        select_tag.card.collapse = True
     except Exception as e:
         raise e
     finally:

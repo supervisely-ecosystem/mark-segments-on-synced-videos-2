@@ -29,7 +29,7 @@ import src.ui.tagging as tagging
 # if multiple users use the same app with the same project
 
 settings = Container(
-    [input_dataset.layout, select_tag.layout], direction="horizontal", gap=15, fractions=[1, 1]
+    [input_dataset.card, select_tag.card], direction="horizontal", gap=15, fractions=[1, 1]
 )
 
 
