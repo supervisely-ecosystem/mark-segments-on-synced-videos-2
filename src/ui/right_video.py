@@ -7,7 +7,8 @@ preview = VideoThumbnail()
 preview.hide()
 
 player = Video()
-sync_btn = Button("Sync with left", button_type="text", icon="zmdi zmdi-time")
+sync_btn = Button("Sync frame from left", button_type="text", icon="zmdi zmdi-time")
+sync_btn.hide()
 
 card = Card(
     "📹 Input video #2",

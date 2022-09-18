@@ -63,6 +63,7 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
         right_video.player.set_video(video_id)
         right_video.preview.set_video_id(video_id)
         right_video.preview.show()
+        right_video.sync_btn.show()
         right_video.card.unlock()
 
     if left_video.player.video_id is not None and right_video.player.video_id is not None:
