@@ -76,6 +76,7 @@ def save_tag():
     tag_meta = TagMeta(name, TagValueType.ANY_STRING)
     g.project_meta = g.project_meta.add_tag_meta(tag_meta)
     g.api.project.update_meta(g.project_id, g.project_meta)
+    g.api.project.pull_meta_ids(g.project_id, g.project_meta)
 
     new_tag_layout.hide()
     existing_tag_layout.show()

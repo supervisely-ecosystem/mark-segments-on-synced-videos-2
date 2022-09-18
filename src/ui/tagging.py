@@ -163,3 +163,24 @@ def reset():
     start_tagging_btn.show()
     select_tag.card.collapse()
     select_tag.card.lock()
+
+
+def get_new_segment_id() -> int:
+    raise NotImplementedError()
+
+
+@mark_segment_btn.click
+def create_segment():
+    segment_id = get_new_segment_id()
+    left_frame = left_video.player.get_current_frame()
+    right_frame = right_video.player.get_current_frame()
+
+    # g.api.video.tag.add_tag
+
+    row = [
+        segment_id,
+        d["begin_tag"].frame_range[0],
+        d["end_tag"].frame_range[0],
+        sly.app.widgets.Table.create_button("preview"),
+        sly.app.widgets.Table.create_button("delete"),
+    ]
