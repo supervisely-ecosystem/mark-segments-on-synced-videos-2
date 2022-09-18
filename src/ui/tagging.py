@@ -24,10 +24,16 @@ mark_segment_btn.hide()
 help_text = Text("Please, finish previous steps to start tagging", status="warning")
 help_block = Flexbox([help_text], center_content=True)
 
-columns = ["Segment ID", "begin", "end", "preview", "delete"]
-pairs = None
-lines = None
-df = None
+COL_ID = "Segment ID"
+COL_BEGIN = "left video frame"
+COL_END = "right video frame"
+COL_PREVIEW = "preview"
+COL_DELETE = "delete"
+
+columns = [COL_ID, COL_BEGIN, COL_END, COL_PREVIEW, COL_DELETE]
+pairs: Dict = None
+lines: List = None
+df: pd.DataFrame = None
 table = Table(fixed_cols=1)
 
 
@@ -78,8 +84,8 @@ def _build_df():
                 segment_id,
                 d["begin_tag"].frame_range[0],
                 d["end_tag"].frame_range[0],
-                sly.app.widgets.Table.create_button("preview"),
-                sly.app.widgets.Table.create_button("delete"),
+                sly.app.widgets.Table.create_button(COL_PREVIEW),
+                sly.app.widgets.Table.create_button(COL_DELETE),
             ]
         )
 
@@ -147,14 +153,14 @@ def _start_tagging():
 def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
     if datapoint.button_name is None:
         return
-    segment_id = datapoint.row["Segment ID"]
-    begin_frame = datapoint.row["begin"]
-    end_frame = datapoint.row["end"]
+    segment_id = datapoint.row[COL_ID]
+    begin_frame = datapoint.row[COL_BEGIN]
+    end_frame = datapoint.row[COL_END]
 
-    if datapoint.button_name == "preview":
+    if datapoint.button_name == COL_PREVIEW:
         left_video.player.set_current_frame(begin_frame)
         right_video.player.set_current_frame(end_frame)
-    elif datapoint.button_name == "delete":
+    elif datapoint.button_name == COL_DELETE:
         raise NotImplementedError()
 
 
@@ -166,7 +172,7 @@ def reset():
 
 
 def get_new_segment_id() -> int:
-    raise NotImplementedError()
+    return max(list(pairs.keys())) + 1
 
 
 @mark_segment_btn.click
@@ -176,11 +182,16 @@ def create_segment():
     right_frame = right_video.player.get_current_frame()
 
     # g.api.video.tag.add_tag
+    left_tag: sly.Tag = None
+    right_tag: sly.Tag = None
+
+    pairs[segment_id]["begin_tag"] = left_tag
+    pairs[segment_id]["end_tag"] = right_tag
 
     row = [
         segment_id,
-        d["begin_tag"].frame_range[0],
-        d["end_tag"].frame_range[0],
-        sly.app.widgets.Table.create_button("preview"),
-        sly.app.widgets.Table.create_button("delete"),
+        left_tag.frame_range[0],
+        right_tag.frame_range[0],
+        sly.app.widgets.Table.create_button(COL_PREVIEW),
+        sly.app.widgets.Table.create_button(COL_DELETE),
     ]
