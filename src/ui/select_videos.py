@@ -11,11 +11,14 @@ columns = ["id", "video", "duration (sec)", "frames", "set left", "set right", "
 lines = None
 table = Table(fixed_cols=2, width="100%")
 
+START_LOCK_MESSAGE = "Select labeling tag on step 2️⃣"
+LABELING_LOCK_MESSAGE = "Stop tagging for current video pair before select another videos"
+
 card = Card(
     "3️⃣ Select left and right video",
     "Select different videos for left and right panels. To mark segments on single video just select same video for both panels",
     collapsable=True,
-    lock_message="Select labeling tag on step 2️⃣",
+    lock_message=START_LOCK_MESSAGE,
     content=table,
 )
 card.lock()

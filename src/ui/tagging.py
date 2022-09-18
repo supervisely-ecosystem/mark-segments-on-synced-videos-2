@@ -92,12 +92,13 @@ def start_tagging_ui():
     table.loading = True
     try:
         _start_tagging()
+        select_videos.card.lock(message=select_videos.LABELING_LOCK_MESSAGE)
         select_videos.card.collapse()
         card.unlock()
         mark_segment_btn.show()
         start_tagging_btn.hide()
-        input_dataset.card.collapse = True
-        select_tag.card.collapse = True
+        input_dataset.card.collapse()
+        select_tag.card.collapse()
     except Exception as e:
         raise e
     finally:
@@ -155,3 +156,10 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
         right_video.player.set_current_frame(end_frame)
     elif datapoint.button_name == "delete":
         raise NotImplementedError()
+
+
+def reset():
+    mark_segment_btn.hide()
+    start_tagging_btn.show()
+    select_tag.card.collapse()
+    select_tag.card.lock()

@@ -15,6 +15,7 @@ import src.globals as g
 import src.ui.left_video as left_video
 import src.ui.right_video as right_video
 import src.ui.select_videos as select_videos
+import src.ui.tagging as tagging
 
 
 select_tag = SelectTagMeta(show_label=False, allowed_types=[sly.TagValueType.ANY_STRING])
@@ -111,9 +112,10 @@ def change_tag():
     finish_step_btn.show()
     change_tag_btn.hide()
     tag_selected_text.hide()
-    select_videos.card.lock()
+    select_videos.card.lock(message=select_videos.START_LOCK_MESSAGE)
     right_video.card.lock()
     left_video.card.lock()
+    tagging.reset()
 
 
 def get_tag_meta() -> TagMeta:
