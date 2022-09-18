@@ -9,7 +9,6 @@ import src.ui.tagging as tagging
 
 columns = ["id", "video", "duration (sec)", "frames", "set left", "set right", "processed"]
 lines = None
-
 table = Table(fixed_cols=2, width="100%")
 
 card = Card(
