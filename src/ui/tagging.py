@@ -75,7 +75,7 @@ def _build_df():
             [
                 segment_id,
                 d["begin_tag"].frame_range[0],
-                d["end_tag"].frame_range[1],
+                d["end_tag"].frame_range[0],
                 sly.app.widgets.Table.create_button("preview"),
                 sly.app.widgets.Table.create_button("delete"),
             ]
@@ -136,3 +136,18 @@ def _start_tagging():
     _process_segment_tags(left_ann.tags, "begin_tag")
     _process_segment_tags(right_ann.tags, "end_tag")
     _build_df()
+
+
+@table.click
+def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
+    if datapoint.button_name is None:
+        return
+    segment_id = datapoint.row["Segment ID"]
+    begin_frame = datapoint.row["begin"]
+    end_frame = datapoint.row["end"]
+
+    if datapoint.button_name == "preview":
+        left_video.player.set_current_frame(begin_frame)
+        right_video.player.set_current_frame(end_frame)
+    elif datapoint.button_name == "delete":
+        raise NotImplementedError()
