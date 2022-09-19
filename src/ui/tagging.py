@@ -120,10 +120,12 @@ def _start_tagging():
     left_id = 3267369  # TODO: left_video.player.video_id
     right_id = 3267370  # TODO: right_video.player.video_id
 
+    # TODO replace annotation download to video info -> tags list
     left_ann_json = g.api.video.annotation.download(left_id)
     left_key_id_map = sly.KeyIdMap()
     left_ann = sly.VideoAnnotation.from_json(left_ann_json, g.project_meta, left_key_id_map)
 
+    # TODO replace annotation download to video info -> tags list
     right_ann_json = g.api.video.annotation.download(right_id)
     right_key_id_map = sly.KeyIdMap()
     right_ann = sly.VideoAnnotation.from_json(right_ann_json, g.project_meta, right_key_id_map)
@@ -158,8 +160,20 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
     end_frame = datapoint.row[COL_END]
 
     if datapoint.button_name == COL_PREVIEW:
-        left_video.player.set_current_frame(begin_frame)
-        right_video.player.set_current_frame(end_frame)
+        if begin_frame is not None:
+            left_video.player.set_current_frame(begin_frame)
+        else:
+            raise DialogWindowError(
+                "Incorrect segment",
+                "Begin Frame is not defined on left video. Make sure you selected correct pair of videos.",
+            )
+        if end_frame is not None:
+            right_video.player.set_current_frame(end_frame)
+        else:
+            raise DialogWindowError(
+                "Incorrect segment",
+                "End Frame is not defined on right video. Make sure you selected correct pair of videos.",
+            )
     elif datapoint.button_name == COL_DELETE:
         # http://78.46.75.100:38589/#tag/Videos/paths/~1videos.tags.remove/delete
         raise NotImplementedError()
