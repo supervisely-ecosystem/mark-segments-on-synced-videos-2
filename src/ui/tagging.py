@@ -179,23 +179,18 @@ def get_new_segment_id() -> int:
 @mark_segment_btn.click
 def create_segment():
     segment_id = get_new_segment_id()
+    tag_meta = select_tag.get_tag_meta()
 
     left_frame = left_video.player.get_current_frame()
     left_value = f"{PREFIX_BEGIN}{segment_id}"
     right_frame = right_video.player.get_current_frame()
     right_value = f"{PREFIX_END}{segment_id}"
 
-    # g.api.video.tag.add_tag
-    tag_meta = select_tag.get_tag_meta()
+    left_tag = sly.VideoTag(tag_meta, left_value, [left_frame, left_frame])
+    g.api.video.tag.add(left_video.player.video_id, left_tag)
 
-    left_tag: sly.Tag = None
-    x = g.api.video.tag.add_tag(
-        tag_meta.sly_id, left_video.player.video_id, left_value, [left_frame, left_frame]
-    )
-    right_tag: sly.Tag = None
-    y = g.api.video.tag.add_tag(
-        tag_meta.sly_id, right_video.player.video_id, right_value, [right_frame, right_frame]
-    )
+    right_tag = sly.VideoTag(tag_meta, right_value, [right_frame, right_frame])
+    g.api.video.tag.add(right_video.player.video_id, right_tag)
 
     pairs[segment_id]["begin_tag"] = left_tag
     pairs[segment_id]["end_tag"] = right_tag

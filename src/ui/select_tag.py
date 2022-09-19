@@ -12,6 +12,7 @@ from supervisely.app.widgets import (
     Text,
 )
 import src.globals as g
+import src.ui.input_dataset as input_dataset
 import src.ui.left_video as left_video
 import src.ui.right_video as right_video
 import src.ui.select_videos as select_videos
