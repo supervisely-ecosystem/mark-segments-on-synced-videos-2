@@ -1,4 +1,5 @@
 from collections import defaultdict
+from tkinter.tix import Select
 from typing import Dict, List
 import pandas as pd
 from datetime import datetime
@@ -21,13 +22,27 @@ PREFIX_END = "end-"
 STATUS_IN_PROGRESS = "⏳ In progress"
 STATUS_DONE = "✅ Done"
 
-start_tagging_btn = Button("Show all segments", icon="zmdi zmdi-play")
-start_tagging_btn.disable()
+show_segments_btn = Button("Show all segments", icon="zmdi zmdi-eye")
+show_segments_btn.disable()
+
+reselect_pair_btn = Button("Select other videos", icon="zmdi zmdi-rotate-left")
+reselect_pair_btn.hide()
+
+close_pair_btn = Button("Select other videos", icon="zmdi zmdi-rotate-left")
+close_pair_btn.hide()
 
 mark_segment_btn = Button("Create segment", icon="zmdi zmdi-label")
 mark_segment_btn.hide()
 
-help_text = Text("Please, finish previous steps to start tagging", status="warning")
+start_tagging_btn = Button("Start segments tagging", icon="zmdi zmdi-play")
+start_tagging_btn.hide()
+
+stop_tagging_btn = Button("Finish pair", icon="zmdi zmdi-check-all", button_type="success")
+stop_tagging_btn.hide()
+
+help_text = Text(
+    "Please, finish previous steps to preview existing tags and start tagging", status="warning"
+)
 help_block = Flexbox([help_text], center_content=True)
 
 COL_ID = "Segment ID".upper()
@@ -57,13 +72,18 @@ card = Card(
     "4️⃣ Assigned tags",
     "Create, preview, navigate and manage tagged segments",
     content=Container([table]),
+    slot_content=stop_tagging_btn,
     lock_message='Press 👆 "START TAGGING" button to create and manage segments',
 )
 card.lock()
 
 layout = Container(
     widgets=[
-        Flexbox([start_tagging_btn, mark_segment_btn], center_content=True, gap=0),
+        Flexbox(
+            [show_segments_btn, start_tagging_btn, reselect_pair_btn, mark_segment_btn],
+            center_content=True,
+            gap=0,
+        ),
         help_block,
         card,
     ],
@@ -123,25 +143,28 @@ def _build_df():
     table.read_pandas(df)
 
 
-@start_tagging_btn.click
-def start_tagging_ui():
+@show_segments_btn.click
+def show_segments_ui():
     table.loading = True
     try:
-        _start_tagging()
+        # _start_tagging()
+        _show_segments()
         select_videos.card.lock(message=select_videos.LABELING_LOCK_MESSAGE)
         select_videos.card.collapse()
         card.unlock()
-        mark_segment_btn.show()
-        start_tagging_btn.hide()
-        input_dataset.card.collapse()
-        select_tag.card.collapse()
+        show_segments_btn.hide()
+        start_tagging_btn.show()
+        reselect_pair_btn.show()
+        # mark_segment_btn.show()
+        # input_dataset.card.collapse()
+        # select_tag.card.collapse()
     except Exception as e:
         raise e
     finally:
         table.loading = False
 
 
-def _start_tagging():
+def _show_segments():
     global pairs
     from src.ui.select_tag import get_tag_meta
 
@@ -200,6 +223,13 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
                 "End Frame is not defined on right video. Make sure you selected correct pair of videos.",
             )
     elif datapoint.button_name == COL_DELETE:
+        if mark_segment_btn.is_hidden():
+            raise DialogWindowError(
+                "Delete action is not allowed in preview mode",
+                'Press start "Start tagging" button to create and remove segments',
+            )
+            return
+
         table.loading = True
         try:
 
@@ -219,11 +249,11 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
     table.clear_selection()
 
 
-def reset():
-    mark_segment_btn.hide()
-    start_tagging_btn.show()
-    select_tag.card.collapse()
-    select_tag.card.lock()
+# def reset():
+#     mark_segment_btn.hide()
+#     show_segments_btn.show()
+#     select_tag.card.collapse()
+#     select_tag.card.lock()
 
 
 def get_new_segment_id() -> int:
@@ -258,3 +288,27 @@ def create_segment():
         raise e
     finally:
         table.loading = False
+
+
+@start_tagging_btn.click
+def start_tagging_ui():
+    start_tagging_btn.hide()
+    reselect_pair_btn.hide()
+    mark_segment_btn.show()
+    stop_tagging_btn.show()
+    select_videos.card.lock(message=select_videos.LABELING_LOCK_MESSAGE)
+    select_videos.card.collapse()
+
+
+@reselect_pair_btn.click
+def reselect_video_pair():
+    card.lock()
+    start_tagging_btn.hide()
+    show_segments_btn.show()
+    show_segments_btn.disable()
+    reselect_pair_btn.hide()
+    help_text.show()
+    left_video.card.lock()
+    right_video.card.lock()
+    select_videos.card.uncollapse()
+    select_videos.card.unlock()

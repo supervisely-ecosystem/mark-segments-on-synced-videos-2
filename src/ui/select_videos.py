@@ -80,7 +80,7 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
         right_video.card.unlock()
 
     if left_video.player.video_id is not None and right_video.player.video_id is not None:
-        tagging.start_tagging_btn.enable()
+        tagging.show_segments_btn.enable()
         tagging.help_text.hide()
 
 
