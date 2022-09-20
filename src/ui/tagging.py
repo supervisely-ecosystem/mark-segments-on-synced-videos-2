@@ -27,22 +27,22 @@ mark_segment_btn.hide()
 help_text = Text("Please, finish previous steps to start tagging", status="warning")
 help_block = Flexbox([help_text], center_content=True)
 
-COL_ID = "Segment ID"
-COL_USER = "User"
-COL_DT = "Created at"
-COL_BEGIN = "Begin Frame (left)"
-COL_END = "End Frame (right)"
-COL_PREVIEW = "Preview"
-COL_DELETE = "Delete"
+COL_ID = "Segment ID".upper()
+COL_USER = "User".upper()
+COL_DT = "Created at".upper()
+COL_BEGIN = "Begin Frame (left)".upper()
+COL_END = "End Frame (right)".upper()
+COL_PREVIEW = "Preview".upper()
+COL_DELETE = "Delete".upper()
 
 columns = [
-    COL_ID.upper(),
-    COL_USER.upper(),
-    COL_DT.upper(),
-    COL_BEGIN.upper(),
-    COL_END.upper(),
-    COL_PREVIEW.upper(),
-    COL_DELETE.upper(),
+    COL_ID,
+    COL_USER,
+    COL_DT,
+    COL_BEGIN,
+    COL_END,
+    COL_PREVIEW,
+    COL_DELETE,
 ]
 pairs: Dict = None
 lines: List = None
@@ -144,11 +144,11 @@ def _start_tagging():
 
     working_tag_meta = get_tag_meta()
 
-    left_id = 3267369  # TODO: left_video.player.video_id
-    right_id = 3267370  # TODO: right_video.player.video_id
+    left_id = left_video.player.video_id
+    right_id = right_video.player.video_id
 
-    left_tags = g.api.video.get_tags(left_id, g.project_meta)
-    right_tags = g.api.video.get_tags(right_id, g.project_meta)
+    left_tags = g.api.video.tag.get_list(left_id, g.project_meta)
+    right_tags = g.api.video.tag.get_list(right_id, g.project_meta)
 
     pairs = defaultdict(lambda: {"begin_tag": None, "end_tag": None})
 
