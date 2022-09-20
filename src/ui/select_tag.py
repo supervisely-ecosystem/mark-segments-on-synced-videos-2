@@ -58,6 +58,21 @@ def create_tag():
     new_tag_layout.show()
 
 
+def create_tag_meta_and_update_project(tag_meta: TagMeta, raise_existing_error=True):
+    existing_tag_meta = g.project_meta.get_tag_meta(tag_meta.name)
+    if existing_tag_meta is not None:
+        if raise_existing_error is False:
+            return existing_tag_meta
+        raise DialogWindowError(
+            title="Name already exists",
+            description=f"Tag with the name {tag_meta.name} already exists in project. Please, create another name.",
+        )
+
+    g.project_meta = g.project_meta.add_tag_meta(tag_meta)
+    g.api.project.update_meta(g.project_id, g.project_meta)
+    g.api.project.pull_meta_ids(g.project_id, g.project_meta)
+
+
 @save_tag_btn.click
 def save_tag():
     name = input_name.get_value().strip()
@@ -66,18 +81,8 @@ def save_tag():
             title="Tag name is empty",
             description="Please, provide the correct tag name.",
         )
-
-    tag_meta = g.project_meta.get_tag_meta(name)
-    if tag_meta is not None:
-        raise DialogWindowError(
-            title="Name already exists",
-            description=f"Tag with the name {name} already exists in project. Please, provide another name.",
-        )
-
     tag_meta = TagMeta(name, TagValueType.ANY_STRING)
-    g.project_meta = g.project_meta.add_tag_meta(tag_meta)
-    g.api.project.update_meta(g.project_id, g.project_meta)
-    g.api.project.pull_meta_ids(g.project_id, g.project_meta)
+    create_tag_meta_and_update_project(tag_meta)
 
     new_tag_layout.hide()
     existing_tag_layout.show()

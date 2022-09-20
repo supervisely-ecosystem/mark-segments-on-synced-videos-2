@@ -36,9 +36,14 @@ def build_table():
     global lines, table
     if lines is None:
         lines = []
+    status_tag_meta = g.get_status_tag()
     table.loading = True
     videos = g.api.video.get_list(g.dataset_id)
     for info in videos:
+        tag_collection = sly.VideoTagCollection.from_api_response(
+            info.tags, g.project_meta.tag_metas
+        )
+        status_tag = tag_collection.get_single_by_name(status_tag_meta.name)
         labeling_url = sly.video.get_labeling_tool_url(g.dataset_id, info.id)
         lines.append(
             [
@@ -48,7 +53,7 @@ def build_table():
                 info.frames_count_compact,
                 sly.app.widgets.Table.create_button(COL_SET_LEFT),
                 sly.app.widgets.Table.create_button(COL_SET_RIGHT),
-                None,
+                status_tag.value if status_tag is not None else None,
             ]
         )
     df = pd.DataFrame(lines, columns=columns)
@@ -77,3 +82,11 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
     if left_video.player.video_id is not None and right_video.player.video_id is not None:
         tagging.start_tagging_btn.enable()
         tagging.help_text.hide()
+
+
+def set_video_status(video_id, existing_tags: sly.VideoTagCollection, value):
+    status_tag = g.get_status_tag()
+    if existing_tags.get_single_by_name(status_tag.name) is None:
+        tag = sly.VideoTag(status_tag, value)
+        g.api.video.tag.add(video_id, tag)
+        table.update_cell_value(COL_ID, video_id, COL_STATUS, value)

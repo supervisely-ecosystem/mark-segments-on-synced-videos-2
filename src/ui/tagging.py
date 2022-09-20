@@ -18,7 +18,10 @@ from supervisely.video_annotation.video_tag import VideoTag
 PREFIX_BEGIN = "begin-"
 PREFIX_END = "end-"
 
-start_tagging_btn = Button("Start tagging", icon="zmdi zmdi-play")
+STATUS_IN_PROGRESS = "⏳ In progress"
+STATUS_DONE = "✅ Done"
+
+start_tagging_btn = Button("Show all segments", icon="zmdi zmdi-play")
 start_tagging_btn.disable()
 
 mark_segment_btn = Button("Create segment", icon="zmdi zmdi-label")
@@ -51,7 +54,7 @@ table = Table(fixed_cols=1)
 
 
 card = Card(
-    "Assigned tags",
+    "4️⃣ Assigned tags",
     "Create, preview, navigate and manage tagged segments",
     content=Container([table]),
     lock_message='Press 👆 "START TAGGING" button to create and manage segments',
@@ -143,14 +146,12 @@ def _start_tagging():
     from src.ui.select_tag import get_tag_meta
 
     working_tag_meta = get_tag_meta()
-
     left_id = left_video.player.video_id
     right_id = right_video.player.video_id
-
     left_tags = g.api.video.tag.get_list(left_id, g.project_meta)
     right_tags = g.api.video.tag.get_list(right_id, g.project_meta)
-
     pairs = defaultdict(lambda: {"begin_tag": None, "end_tag": None})
+    status_tag = g.get_status_tag()
 
     def _process_segment_tags(video_tags, pair_key):
         for t in video_tags:
@@ -169,6 +170,10 @@ def _start_tagging():
     _process_segment_tags(left_tags, "begin_tag")
     _process_segment_tags(right_tags, "end_tag")
     _build_df()
+
+    select_videos.set_video_status(left_id, left_tags, STATUS_IN_PROGRESS)
+    select_videos.set_video_status(right_id, right_tags, STATUS_IN_PROGRESS)
+    select_videos.table.clear_selection()
 
 
 @table.click
