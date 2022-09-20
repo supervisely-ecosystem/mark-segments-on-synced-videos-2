@@ -19,7 +19,7 @@ PREFIX_BEGIN = "begin-"
 PREFIX_END = "end-"
 
 start_tagging_btn = Button("Start tagging", icon="zmdi zmdi-play")
-# start_tagging_btn.disable()
+start_tagging_btn.disable()
 
 mark_segment_btn = Button("Create segment", icon="zmdi zmdi-label")
 mark_segment_btn.hide()
@@ -210,6 +210,8 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
             raise e
         finally:
             table.loading = False
+
+    table.clear_selection()
 
 
 def reset():

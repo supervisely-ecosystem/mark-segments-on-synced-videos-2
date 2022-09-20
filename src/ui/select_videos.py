@@ -7,7 +7,15 @@ import src.ui.left_video as left_video
 import src.ui.right_video as right_video
 import src.ui.tagging as tagging
 
-columns = ["id", "video", "duration (sec)", "frames", "set left", "set right", "processed"]
+COL_ID = "id".upper()
+COL_VIDEO = "video".upper()
+COL_DURATION = "duration (sec)".upper()
+COL_FRAMES = "frames".upper()
+COL_SET_LEFT = "set left".upper()
+COL_SET_RIGHT = "set right".upper()
+COL_STATUS = "status".upper()
+
+columns = [COL_ID, COL_VIDEO, COL_DURATION, COL_FRAMES, COL_SET_LEFT, COL_SET_RIGHT, COL_STATUS]
 lines = None
 table = Table(fixed_cols=2, width="100%")
 
@@ -38,8 +46,8 @@ def build_table():
                 sly.video.get_labeling_tool_link(labeling_url, info.name),
                 info.duration,
                 info.frames_count_compact,
-                sly.app.widgets.Table.create_button("set left"),
-                sly.app.widgets.Table.create_button("set right"),
+                sly.app.widgets.Table.create_button(COL_SET_LEFT),
+                sly.app.widgets.Table.create_button(COL_SET_RIGHT),
                 None,
             ]
         )
@@ -52,14 +60,14 @@ def build_table():
 def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
     if datapoint.button_name is None:
         return
-    video_id = datapoint.row["id"]
+    video_id = datapoint.row[COL_ID]
     g.api.video.get_info_by_id(video_id)
-    if datapoint.button_name == "set left":
+    if datapoint.button_name == COL_SET_LEFT:
         left_video.player.set_video(video_id)
         left_video.preview.set_video_id(video_id)
         left_video.preview.show()
         left_video.card.unlock()
-    elif datapoint.button_name == "set right":
+    elif datapoint.button_name == COL_SET_RIGHT:
         right_video.player.set_video(video_id)
         right_video.preview.set_video_id(video_id)
         right_video.preview.show()
