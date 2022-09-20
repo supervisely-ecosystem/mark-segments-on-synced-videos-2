@@ -1,6 +1,8 @@
 from collections import defaultdict
 from typing import Dict, List
 import pandas as pd
+from datetime import datetime
+
 import supervisely as sly
 from supervisely.app.exceptions import DialogWindowError
 from supervisely.app.widgets import Card, Container, Button, Flexbox, Container, Text, Table
@@ -11,12 +13,13 @@ import src.ui.select_tag as select_tag
 import src.ui.select_videos as select_videos
 import src.ui.left_video as left_video
 import src.ui.right_video as right_video
+from supervisely.video_annotation.video_tag import VideoTag
 
 PREFIX_BEGIN = "begin-"
 PREFIX_END = "end-"
 
 start_tagging_btn = Button("Start tagging", icon="zmdi zmdi-play")
-start_tagging_btn.disable()
+# start_tagging_btn.disable()
 
 mark_segment_btn = Button("Create segment", icon="zmdi zmdi-label")
 mark_segment_btn.hide()
@@ -25,12 +28,22 @@ help_text = Text("Please, finish previous steps to start tagging", status="warni
 help_block = Flexbox([help_text], center_content=True)
 
 COL_ID = "Segment ID"
-COL_BEGIN = "left video frame"
-COL_END = "right video frame"
-COL_PREVIEW = "preview"
-COL_DELETE = "delete"
+COL_USER = "User"
+COL_DT = "Created at"
+COL_BEGIN = "Begin Frame (left)"
+COL_END = "End Frame (right)"
+COL_PREVIEW = "Preview"
+COL_DELETE = "Delete"
 
-columns = [COL_ID, COL_BEGIN, COL_END, COL_PREVIEW, COL_DELETE]
+columns = [
+    COL_ID.upper(),
+    COL_USER.upper(),
+    COL_DT.upper(),
+    COL_BEGIN.upper(),
+    COL_END.upper(),
+    COL_PREVIEW.upper(),
+    COL_DELETE.upper(),
+]
 pairs: Dict = None
 lines: List = None
 df: pd.DataFrame = None
@@ -75,20 +88,34 @@ def _get_frame_from_value(tag: sly.Tag) -> int:
     return frame_index
 
 
+def _create_row(segment_id: str, begin: VideoTag, end: VideoTag):
+    dt = None
+    user = None
+
+    if begin is not None:
+        dt = sly.get_readable_datetime(begin.created_at)
+        user = begin.labeler_login
+    elif end is not None:
+        dt = sly.get_readable_datetime(end.created_at)
+        user = end.labeler_login
+
+    row = [
+        segment_id,
+        user,
+        dt,
+        begin.frame_range[0] if begin is not None else None,
+        end.frame_range[0] if end is not None else None,
+        sly.app.widgets.Table.create_button(COL_PREVIEW),
+        sly.app.widgets.Table.create_button(COL_DELETE),
+    ]
+    return row
+
+
 def _build_df():
     global lines, df
     lines = []
     for segment_id, d in pairs.items():
-        lines.append(
-            [
-                segment_id,
-                d["begin_tag"].frame_range[0] if d["begin_tag"] is not None else None,
-                d["end_tag"].frame_range[0] if d["end_tag"] is not None else None,
-                sly.app.widgets.Table.create_button(COL_PREVIEW),
-                sly.app.widgets.Table.create_button(COL_DELETE),
-            ]
-        )
-
+        lines.append(_create_row(segment_id, d["begin_tag"], d["end_tag"]))
     df = pd.DataFrame(lines, columns=columns)
     table.read_pandas(df)
 
@@ -120,15 +147,8 @@ def _start_tagging():
     left_id = 3267369  # TODO: left_video.player.video_id
     right_id = 3267370  # TODO: right_video.player.video_id
 
-    # TODO replace annotation download to video info -> tags list
-    left_ann_json = g.api.video.annotation.download(left_id)
-    left_key_id_map = sly.KeyIdMap()
-    left_ann = sly.VideoAnnotation.from_json(left_ann_json, g.project_meta, left_key_id_map)
-
-    # TODO replace annotation download to video info -> tags list
-    right_ann_json = g.api.video.annotation.download(right_id)
-    right_key_id_map = sly.KeyIdMap()
-    right_ann = sly.VideoAnnotation.from_json(right_ann_json, g.project_meta, right_key_id_map)
+    left_tags = g.api.video.get_tags(left_id, g.project_meta)
+    right_tags = g.api.video.get_tags(right_id, g.project_meta)
 
     pairs = defaultdict(lambda: {"begin_tag": None, "end_tag": None})
 
@@ -146,8 +166,8 @@ def _start_tagging():
                 segment_id = _get_frame_from_value(t)
                 pairs[segment_id][pair_key] = t
 
-    _process_segment_tags(left_ann.tags, "begin_tag")
-    _process_segment_tags(right_ann.tags, "end_tag")
+    _process_segment_tags(left_tags, "begin_tag")
+    _process_segment_tags(right_tags, "end_tag")
     _build_df()
 
 
@@ -200,22 +220,32 @@ def create_segment():
     right_frame = right_video.player.get_current_frame()
     right_value = f"{PREFIX_END}{segment_id}"
 
-    left_tag = sly.VideoTag(tag_meta, left_value, [left_frame, left_frame])
+    # @TODO: how to get UserId, CreatedAt, UpdatedAt
+    # created_at=datatime.now()
+    # updated_at
+
+    left_tag = sly.VideoTag(
+        tag_meta,
+        left_value,
+        [left_frame, left_frame],
+        labeler_login=g.user.login,
+        created_at=None,
+        updated_at=None,
+    )
+    # @TODO: update labeler and timestamps
     g.api.video.tag.add(left_video.player.video_id, left_tag)
 
-    right_tag = sly.VideoTag(tag_meta, right_value, [right_frame, right_frame])
+    right_tag = sly.VideoTag(
+        tag_meta,
+        right_value,
+        [right_frame, right_frame],
+        labeler_login=g.user.login,
+        created_at=None,
+        updated_at=None,
+    )
     g.api.video.tag.add(right_video.player.video_id, right_tag)
 
     pairs[segment_id]["begin_tag"] = left_tag
     pairs[segment_id]["end_tag"] = right_tag
-
-    row = [
-        segment_id,
-        left_tag.frame_range[0],
-        right_tag.frame_range[0],
-        sly.app.widgets.Table.create_button(COL_PREVIEW),
-        sly.app.widgets.Table.create_button(COL_DELETE),
-    ]
-
-    # add row to dataframe
-    # sync data changes
+    row = _create_row(segment_id, left_tag, right_tag)
+    table.add_row(row)
