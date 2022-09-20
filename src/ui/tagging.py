@@ -37,8 +37,8 @@ mark_segment_btn.hide()
 start_tagging_btn = Button("Start segments tagging", icon="zmdi zmdi-play")
 start_tagging_btn.hide()
 
-stop_tagging_btn = Button("Finish pair", icon="zmdi zmdi-check-all", button_type="success")
-stop_tagging_btn.hide()
+done_tagging_btn = Button("Mark videos as done", icon="zmdi zmdi-check-all", button_type="success")
+done_tagging_btn.hide()
 
 help_text = Text(
     "Please, finish previous steps to preview existing tags and start tagging", status="warning"
@@ -72,7 +72,9 @@ card = Card(
     "4️⃣ Assigned tags",
     "Create, preview, navigate and manage tagged segments",
     content=Container([table]),
-    slot_content=stop_tagging_btn,
+    slot_content=Flexbox(
+        [done_tagging_btn, close_pair_btn],
+    ),
     lock_message='Press 👆 "START TAGGING" button to create and manage segments',
 )
 card.lock()
@@ -249,13 +251,6 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
     table.clear_selection()
 
 
-# def reset():
-#     mark_segment_btn.hide()
-#     show_segments_btn.show()
-#     select_tag.card.collapse()
-#     select_tag.card.lock()
-
-
 def get_new_segment_id() -> int:
     if len(pairs.keys()) == 0:
         return 1
@@ -295,7 +290,8 @@ def start_tagging_ui():
     start_tagging_btn.hide()
     reselect_pair_btn.hide()
     mark_segment_btn.show()
-    stop_tagging_btn.show()
+    done_tagging_btn.show()
+    close_pair_btn.show()
     select_videos.card.lock(message=select_videos.LABELING_LOCK_MESSAGE)
     select_videos.card.collapse()
 
@@ -312,3 +308,35 @@ def reselect_video_pair():
     right_video.card.lock()
     select_videos.card.uncollapse()
     select_videos.card.unlock()
+
+
+def _close_video_pair():
+    card.lock()
+    close_pair_btn.hide()
+    mark_segment_btn.hide()
+    done_tagging_btn.hide()
+    start_tagging_btn.hide()
+    show_segments_btn.show()
+    show_segments_btn.disable()
+    reselect_pair_btn.hide()
+    help_text.show()
+    left_video.card.lock()
+    right_video.card.lock()
+    select_videos.card.uncollapse()
+    select_videos.card.unlock()
+
+
+@close_pair_btn.click
+def close_video_pair():
+    _close_video_pair()
+
+
+@done_tagging_btn.click
+def mark_videos_as_done():
+    left_id = left_video.player.video_id
+    right_id = right_video.player.video_id
+    left_tags = g.api.video.tag.get_list(left_id, g.project_meta)
+    right_tags = g.api.video.tag.get_list(right_id, g.project_meta)
+    select_videos.set_video_status(left_id, left_tags, STATUS_DONE, update=True)
+    select_videos.set_video_status(right_id, right_tags, STATUS_DONE, update=True)
+    _close_video_pair()

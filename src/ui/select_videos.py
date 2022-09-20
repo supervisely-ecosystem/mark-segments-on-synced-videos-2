@@ -84,9 +84,12 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
         tagging.help_text.hide()
 
 
-def set_video_status(video_id, existing_tags: sly.VideoTagCollection, value):
+def set_video_status(video_id, existing_tags: sly.VideoTagCollection, value, update=False):
     status_tag = g.get_status_tag()
-    if existing_tags.get_single_by_name(status_tag.name) is None:
+    existing_tag = existing_tags.get_single_by_name(status_tag.name)
+    if existing_tag is None:
         tag = sly.VideoTag(status_tag, value)
         g.api.video.tag.add(video_id, tag)
         table.update_cell_value(COL_ID, video_id, COL_STATUS, value)
+    elif update is True:
+        g.api.video.tag.update_value(existing_tag.sly_id, value)
