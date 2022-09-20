@@ -195,8 +195,21 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
                 "End Frame is not defined on right video. Make sure you selected correct pair of videos.",
             )
     elif datapoint.button_name == COL_DELETE:
-        # http://78.46.75.100:38589/#tag/Videos/paths/~1videos.tags.remove/delete
-        raise NotImplementedError()
+        table.loading = True
+        try:
+
+            def _delete(tag: VideoTag):
+                if tag is not None:
+                    g.api.video.tag.remove(tag)
+
+            _delete(pairs[segment_id]["begin_tag"])
+            _delete(pairs[segment_id]["end_tag"])
+            pairs.pop(segment_id)
+            table.delete_row(COL_ID, segment_id)
+        except Exception as e:
+            raise e
+        finally:
+            table.loading = False
 
 
 def reset():
@@ -207,26 +220,34 @@ def reset():
 
 
 def get_new_segment_id() -> int:
+    if len(pairs.keys()) == 0:
+        return 1
     return max(list(pairs.keys())) + 1
 
 
 @mark_segment_btn.click
 def create_segment():
-    segment_id = get_new_segment_id()
-    tag_meta = select_tag.get_tag_meta()
+    table.loading = True
+    try:
+        segment_id = get_new_segment_id()
+        tag_meta = select_tag.get_tag_meta()
 
-    left_frame = left_video.player.get_current_frame()
-    left_value = f"{PREFIX_BEGIN}{segment_id}"
-    right_frame = right_video.player.get_current_frame()
-    right_value = f"{PREFIX_END}{segment_id}"
+        left_frame = left_video.player.get_current_frame()
+        left_value = f"{PREFIX_BEGIN}{segment_id}"
+        right_frame = right_video.player.get_current_frame()
+        right_value = f"{PREFIX_END}{segment_id}"
 
-    left_tag = sly.VideoTag(tag_meta, left_value, [left_frame, left_frame])
-    g.api.video.tag.add(left_video.player.video_id, left_tag)
+        left_tag = sly.VideoTag(tag_meta, left_value, [left_frame, left_frame])
+        g.api.video.tag.add(left_video.player.video_id, left_tag)
 
-    right_tag = sly.VideoTag(tag_meta, right_value, [right_frame, right_frame])
-    g.api.video.tag.add(right_video.player.video_id, right_tag)
+        right_tag = sly.VideoTag(tag_meta, right_value, [right_frame, right_frame])
+        g.api.video.tag.add(right_video.player.video_id, right_tag)
 
-    pairs[segment_id]["begin_tag"] = left_tag
-    pairs[segment_id]["end_tag"] = right_tag
-    row = _create_row(segment_id, left_tag, right_tag)
-    table.add_row(row)
+        pairs[segment_id]["begin_tag"] = left_tag
+        pairs[segment_id]["end_tag"] = right_tag
+        row = _create_row(segment_id, left_tag, right_tag)
+        table.insert_row(row)
+    except Exception as e:
+        raise e
+    finally:
+        table.loading = False
