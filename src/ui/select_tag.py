@@ -32,7 +32,7 @@ existing_tag_layout = Container(
     [
         Flexbox([select_tag, create_tag_btn]),
         tag_selected_text,
-        Container([finish_step_btn, change_tag_btn], gap=0),
+        finish_step_btn,
     ]
 )
 
@@ -49,6 +49,7 @@ card = Card(
     "Select key-value(str) tag for labeling",
     collapsable=True,
     content=Container([existing_tag_layout, new_tag_layout], gap=0),
+    slot_content=change_tag_btn,
 )
 
 
@@ -110,6 +111,7 @@ def finish_step():
     change_tag_btn.show()
     tag_selected_text.show()
     select_videos.card.unlock()
+    select_videos.card.uncollapse()
 
 
 @change_tag_btn.click
@@ -120,9 +122,18 @@ def change_tag():
     change_tag_btn.hide()
     tag_selected_text.hide()
     select_videos.card.lock(message=select_videos.START_LOCK_MESSAGE)
+    select_videos.card.collapse()
     right_video.card.lock()
     left_video.card.lock()
-    tagging.reset()
+
+    tagging.card.lock()
+    tagging.reselect_pair_btn.hide()
+    tagging.done_tagging_btn.hide()
+    tagging.mark_segment_btn.hide()
+    tagging.close_pair_btn.hide()
+    tagging.show_segments_btn.show()
+    tagging.show_segments_btn.disable()
+    tagging.help_text.show()
 
 
 def get_tag_meta() -> TagMeta:

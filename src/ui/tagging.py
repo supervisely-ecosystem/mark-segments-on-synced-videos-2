@@ -75,7 +75,7 @@ card = Card(
     slot_content=Flexbox(
         [done_tagging_btn, close_pair_btn],
     ),
-    lock_message='Press 👆 "START TAGGING" button to create and manage segments',
+    lock_message='Press 👆 "Show segments" button to create and manage segments',
 )
 card.lock()
 
