@@ -220,29 +220,10 @@ def create_segment():
     right_frame = right_video.player.get_current_frame()
     right_value = f"{PREFIX_END}{segment_id}"
 
-    # @TODO: how to get UserId, CreatedAt, UpdatedAt
-    # created_at=datatime.now()
-    # updated_at
-
-    left_tag = sly.VideoTag(
-        tag_meta,
-        left_value,
-        [left_frame, left_frame],
-        labeler_login=g.user.login,
-        created_at=None,
-        updated_at=None,
-    )
-    # @TODO: update labeler and timestamps
+    left_tag = sly.VideoTag(tag_meta, left_value, [left_frame, left_frame])
     g.api.video.tag.add(left_video.player.video_id, left_tag)
 
-    right_tag = sly.VideoTag(
-        tag_meta,
-        right_value,
-        [right_frame, right_frame],
-        labeler_login=g.user.login,
-        created_at=None,
-        updated_at=None,
-    )
+    right_tag = sly.VideoTag(tag_meta, right_value, [right_frame, right_frame])
     g.api.video.tag.add(right_video.player.video_id, right_tag)
 
     pairs[segment_id]["begin_tag"] = left_tag
