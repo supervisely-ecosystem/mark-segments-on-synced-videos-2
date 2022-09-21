@@ -1,8 +1,6 @@
 from collections import defaultdict
-from tkinter.tix import Select
 from typing import Dict, List
 import pandas as pd
-from datetime import datetime
 
 import supervisely as sly
 from supervisely.app.exceptions import DialogWindowError
