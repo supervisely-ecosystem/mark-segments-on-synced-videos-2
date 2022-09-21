@@ -1,6 +1,4 @@
 {
-  "entrypoint": "python -m uvicorn src.main:m.app --host 0.0.0.0 --port 8000",
-  "port": 8000,
   "name": "Mark segments on synced videos",
   "description": "Tag segments (begin and end) on single or multiple videos in dual-panel view",
   "categories": ["videos", "labeling"],
@@ -9,5 +7,8 @@
   "context_menu": {
     "target": ["videos_dataset"]
   },
-  "min_agent_version": "6.6.6"
+  "min_agent_version": "6.6.7",
+  "min_instance_version": "6.5.37",
+  "entrypoint": "python -m uvicorn src.main:m.app --host 0.0.0.0 --port 8000",
+  "port": 8000
 }
