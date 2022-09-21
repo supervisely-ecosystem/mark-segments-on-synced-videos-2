@@ -97,6 +97,7 @@ def set_video_status(video_id, existing_tags: sly.VideoTagCollection, value, upd
         table.update_cell_value(COL_ID, video_id, COL_STATUS, value)
     elif update is True:
         g.api.video.tag.update_value(existing_tag.sly_id, value)
+        table.update_cell_value(COL_ID, video_id, COL_STATUS, value)
 
 
 @reselect_pair_btn.click
