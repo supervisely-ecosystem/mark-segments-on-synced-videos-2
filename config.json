@@ -5,7 +5,9 @@
   "icon": "https://user-images.githubusercontent.com/12828725/191491983-41c25c67-b6d3-4316-8c35-fe382166a312.png",
   "poster": "some url",
   "context_menu": {
-    "target": ["videos_dataset"]
+    "target": [
+      "videos_dataset"
+    ]
   },
   "min_agent_version": "6.6.7",
   "min_instance_version": "6.5.37",
