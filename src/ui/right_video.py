@@ -11,7 +11,7 @@ sync_btn = Button("Sync frame from left video", button_type="text", icon="zmdi z
 sync_btn.hide()
 
 card = Card(
-    "📹 Input video #2",
+    "📹 Video #2",
     "Navigate and tag segments endings on this video",
     content=Container([preview, player, sync_btn], direction="vertical"),
     lock_message='Select video in table by clicking 👆 "SET RIGHT" button on step 3️⃣',
