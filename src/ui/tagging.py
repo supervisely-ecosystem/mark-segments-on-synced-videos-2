@@ -25,9 +25,6 @@ STATUS_DONE = "✅ Done"
 show_segments_btn = Button("Show all segments", icon="zmdi zmdi-eye")
 show_segments_btn.disable()
 
-reselect_pair_btn = Button("Select other videos", icon="zmdi zmdi-rotate-left")
-reselect_pair_btn.hide()
-
 close_pair_btn = Button("Select other videos", icon="zmdi zmdi-rotate-left")
 close_pair_btn.hide()
 
@@ -82,7 +79,7 @@ card.lock()
 layout = Container(
     widgets=[
         Flexbox(
-            [show_segments_btn, start_tagging_btn, reselect_pair_btn, mark_segment_btn],
+            [show_segments_btn, start_tagging_btn, mark_segment_btn],
             center_content=True,
             gap=0,
         ),
@@ -153,10 +150,10 @@ def show_segments_ui():
         _show_segments()
         select_videos.card.lock(message=select_videos.LABELING_LOCK_MESSAGE)
         select_videos.card.collapse()
+        select_videos.reselect_pair_btn.show()
         card.unlock()
         show_segments_btn.hide()
         start_tagging_btn.show()
-        reselect_pair_btn.show()
         # mark_segment_btn.show()
         # input_dataset.card.collapse()
         # select_tag.card.collapse()
@@ -288,26 +285,11 @@ def create_segment():
 @start_tagging_btn.click
 def start_tagging_ui():
     start_tagging_btn.hide()
-    reselect_pair_btn.hide()
     mark_segment_btn.show()
     done_tagging_btn.show()
     close_pair_btn.show()
     select_videos.card.lock(message=select_videos.LABELING_LOCK_MESSAGE)
     select_videos.card.collapse()
-
-
-@reselect_pair_btn.click
-def reselect_video_pair():
-    card.lock()
-    start_tagging_btn.hide()
-    show_segments_btn.show()
-    show_segments_btn.disable()
-    reselect_pair_btn.hide()
-    help_text.show()
-    left_video.card.lock()
-    right_video.card.lock()
-    select_videos.card.uncollapse()
-    select_videos.card.unlock()
 
 
 def _close_video_pair():
@@ -318,7 +300,6 @@ def _close_video_pair():
     start_tagging_btn.hide()
     show_segments_btn.show()
     show_segments_btn.disable()
-    reselect_pair_btn.hide()
     help_text.show()
     left_video.card.lock()
     right_video.card.lock()

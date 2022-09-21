@@ -127,13 +127,14 @@ def change_tag():
     left_video.card.lock()
 
     tagging.card.lock()
-    tagging.reselect_pair_btn.hide()
+    select_videos.reselect_pair_btn.hide()
     tagging.done_tagging_btn.hide()
     tagging.mark_segment_btn.hide()
     tagging.close_pair_btn.hide()
     tagging.show_segments_btn.show()
     tagging.show_segments_btn.disable()
     tagging.help_text.show()
+    tagging.start_tagging_btn.hide()
 
 
 def get_tag_meta() -> TagMeta:

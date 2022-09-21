@@ -15,18 +15,6 @@ import src.ui.left_video as left_video
 import src.ui.right_video as right_video
 import src.ui.tagging as tagging
 
-# @TODO:
-# https://yaytext.com/emoji/keycaps/
-# emoji as step number 1️⃣
-
-# 1. input dataset  # 2. select tag
-# Select pair of videos - you can choose single video for dual layout
-# First video for segmenta start # Second video for segment end
-# start labeling button
-# finish labeling button
-
-# save user_id in final tagging (use user api token to tag videos)
-# if multiple users use the same app with the same project
 
 settings = Container(
     [input_dataset.card, select_tag.card], direction="horizontal", gap=15, fractions=[1, 1]

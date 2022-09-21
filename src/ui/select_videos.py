@@ -1,7 +1,7 @@
 import pandas as pd
 import supervisely as sly
 from supervisely.app.exceptions import DialogWindowError
-from supervisely.app.widgets import Card, Table
+from supervisely.app.widgets import Card, Table, Button
 import src.globals as g
 import src.ui.left_video as left_video
 import src.ui.right_video as right_video
@@ -22,12 +22,16 @@ table = Table(fixed_cols=2, width="100%")
 START_LOCK_MESSAGE = "Select labeling tag on step 2️⃣"
 LABELING_LOCK_MESSAGE = "Stop tagging for current video pair before select another videos"
 
+reselect_pair_btn = Button("Select other videos", icon="zmdi zmdi-rotate-left")
+reselect_pair_btn.hide()
+
 card = Card(
     "3️⃣ Select left and right video",
     "Select different videos for left and right panels. To mark segments on single video just select same video for both panels",
     collapsable=True,
-    lock_message=START_LOCK_MESSAGE,
     content=table,
+    slot_content=reselect_pair_btn,
+    lock_message=START_LOCK_MESSAGE,
 )
 card.lock()
 
@@ -93,3 +97,19 @@ def set_video_status(video_id, existing_tags: sly.VideoTagCollection, value, upd
         table.update_cell_value(COL_ID, video_id, COL_STATUS, value)
     elif update is True:
         g.api.video.tag.update_value(existing_tag.sly_id, value)
+
+
+@reselect_pair_btn.click
+def reselect_video_pair():
+    import src.ui.tagging as tagging
+
+    tagging.card.lock()
+    tagging.start_tagging_btn.hide()
+    tagging.show_segments_btn.show()
+    tagging.show_segments_btn.disable()
+    reselect_pair_btn.hide()
+    tagging.help_text.show()
+    tagging.left_video.card.lock()
+    tagging.right_video.card.lock()
+    tagging.select_videos.card.uncollapse()
+    tagging.select_videos.card.unlock()
