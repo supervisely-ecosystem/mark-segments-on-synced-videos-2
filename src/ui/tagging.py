@@ -173,11 +173,10 @@ def _show_segments():
     left_tags = g.api.video.tag.get_list(left_id, g.project_meta)
     right_tags = g.api.video.tag.get_list(right_id, g.project_meta)
     pairs = defaultdict(lambda: {"begin_tag": None, "end_tag": None})
-    status_tag = g.get_status_tag()
 
-    def _process_segment_tags(video_tags, pair_key):
+    def _process_segment_tags(video_tags: sly.VideoTagCollection, pair_key, prefix):
         for t in video_tags:
-            if t.name == working_tag_meta.name:
+            if t.name == working_tag_meta.name and t.value.startswith(prefix):
                 if t.frame_range is None:
                     raise ValueError(
                         "Tag does not assigned to any frame. Make sure you selected correct tag on step 2"
@@ -189,12 +188,13 @@ def _show_segments():
                 segment_id = _get_frame_from_value(t)
                 pairs[segment_id][pair_key] = t
 
-    _process_segment_tags(left_tags, "begin_tag")
-    _process_segment_tags(right_tags, "end_tag")
+    _process_segment_tags(left_tags, "begin_tag", PREFIX_BEGIN)
+    _process_segment_tags(right_tags, "end_tag", PREFIX_END)
     _build_df()
 
     select_videos.set_video_status(left_id, left_tags, STATUS_IN_PROGRESS)
-    select_videos.set_video_status(right_id, right_tags, STATUS_IN_PROGRESS)
+    if left_id != right_id:
+        select_videos.set_video_status(right_id, right_tags, STATUS_IN_PROGRESS)
     select_videos.table.clear_selection()
 
 
@@ -317,7 +317,8 @@ def mark_videos_as_done():
     left_id = left_video.player.video_id
     right_id = right_video.player.video_id
     left_tags = g.api.video.tag.get_list(left_id, g.project_meta)
-    right_tags = g.api.video.tag.get_list(right_id, g.project_meta)
     select_videos.set_video_status(left_id, left_tags, STATUS_DONE, update=True)
-    select_videos.set_video_status(right_id, right_tags, STATUS_DONE, update=True)
+    if left_id != right_id:
+        right_tags = g.api.video.tag.get_list(right_id, g.project_meta)
+        select_videos.set_video_status(right_id, right_tags, STATUS_DONE, update=True)
     _close_video_pair()
