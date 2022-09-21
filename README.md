@@ -22,16 +22,22 @@
 
 Application allows tag and manage segments on video pairs in side-by-side view. 
 
+In can work in two modes:
+- label segemnt on a single video
+- label segment on two videos (pair)
 
-calculates interactive heatmap chart for every class with objects distribution: how many images are in input project with the certain number of objects of specific class. User can click table cell and see the list of all corresponding images. To preview image with annotation user just need to click preview button in images table.
-
-<img src="https://user-images.githubusercontent.com/12828725/187033791-1fbad623-dd8b-467a-ac0c-06aa2a9532d2.png" />
+Segment defines by two tags: app assigns tag with string value `begin-<segment-id>` on a specific frame on the left video and  tag with string value `end-<segment-id>` on a specific frame on the right video.
 
 # How to use
 
-1. Run application from the context menu of images project
-2. Open app and interact with heatmap table, images table and preview of labeled image.
-3. Stop application manually
+1. Run application from the context menu of video dataset
+2. Open app
+3. **Step 1** shows the information about selected dataset with links to project / dataset.
+4. **Step 2** allows to select existing key-value(str) tag or create a new one.
+5. On **Step 3** it is needed to select left and right video by clicking on corresponding buttons in videos table.
+6. Once videos are selected user can preview and manage existing segments. 
+7. Press `Start segments tagging` button to start tagging, i.e. create or delete tags segments.
+8. On videos table at **Step 2** there is also column `STATUS` that helps to navigate what video are finished and what are in progress.
 
 # Screenshot
 
