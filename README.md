@@ -7,6 +7,7 @@
 <p align="center">
   <a href="#Overview">Overview</a> •
   <a href="#How-to-Use">How to use</a> •
+  <a href="#Demo-data">Demo data</a> •
   <a href="#Demo">Screenshot</a>
 </p>
 
@@ -20,13 +21,14 @@
 
 # Overview
 
-Application allows tag and manage segments on video pairs in side-by-side view. 
+Application allows tag and manage segments on video pairs in side-by-side view.
 
 In can work in two modes:
+
 - label segemnt on a single video
 - label segment on two videos (pair)
 
-Segment defines by two tags: app assigns tag with string value `begin-<segment-id>` on a specific frame on the left video and  tag with string value `end-<segment-id>` on a specific frame on the right video.
+Segment defines by two tags: app assigns tag with string value `begin-<segment-id>` on a specific frame on the left video and tag with string value `end-<segment-id>` on a specific frame on the right video.
 
 # How to use
 
@@ -35,10 +37,18 @@ Segment defines by two tags: app assigns tag with string value `begin-<segment-i
 3. **Step 1** shows the information about selected dataset with links to project / dataset.
 4. **Step 2** allows to select existing key-value(str) tag or create a new one.
 5. On **Step 3** it is needed to select left and right video by clicking on corresponding buttons in videos table.
-6. Once videos are selected user can preview and manage existing segments. 
+6. Once videos are selected user can preview and manage existing segments.
 7. Press `Start segments tagging` button to start tagging, i.e. create or delete tags segments.
 8. On videos table at **Step 2** there is also column `STATUS` that helps to navigate what videos are finished and what are in progress.
 9. Stop the app manually
+
+# Demo data
+
+- [Demo video pairs](https://ecosystem.supervise.ly/projects/demo-video-pairs)
+
+  Use this demo data to test this labeling app.
+
+  <img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/demo-video-pairs" src="https://user-images.githubusercontent.com/12828725/191751649-770c75c0-1265-4cac-b83d-7b3155d20081.png"/>
 
 # Screenshot
 
