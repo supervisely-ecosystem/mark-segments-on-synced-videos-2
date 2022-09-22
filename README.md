@@ -37,7 +37,7 @@ Segment defines by two tags: app assigns tag with string value `begin-<segment-i
 5. On **Step 3** it is needed to select left and right video by clicking on corresponding buttons in videos table.
 6. Once videos are selected user can preview and manage existing segments. 
 7. Press `Start segments tagging` button to start tagging, i.e. create or delete tags segments.
-8. On videos table at **Step 2** there is also column `STATUS` that helps to navigate what video are finished and what are in progress.
+8. On videos table at **Step 2** there is also column `STATUS` that helps to navigate what videos are finished and what are in progress.
 
 # Screenshot
 
