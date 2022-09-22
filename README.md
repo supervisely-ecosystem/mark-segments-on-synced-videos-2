@@ -25,7 +25,7 @@ Application allows tag and manage segments on video pairs in side-by-side view.
 
 In can work in two modes:
 
-- label segemnt on a single video
+- label segment on a single video
 - label segment on two videos (pair)
 
 Segment defines by two tags: app assigns tag with string value `begin-<segment-id>` on a specific frame on the left video and tag with string value `end-<segment-id>` on a specific frame on the right video.
