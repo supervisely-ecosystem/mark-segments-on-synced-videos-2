@@ -1,5 +1,6 @@
 {
   "name": "Mark segments on multi-camera videos",
+  "version": "2.0.0",
   "description": "Tag segments (begin and end) on single or multiple videos in dual-panel view",
   "categories": ["videos", "labeling"],
   "icon": "https://user-images.githubusercontent.com/12828725/191491983-41c25c67-b6d3-4316-8c35-fe382166a312.png",
