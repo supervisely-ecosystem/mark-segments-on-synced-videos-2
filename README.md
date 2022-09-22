@@ -2,7 +2,7 @@
 
 <img alt="poster" src="https://user-images.githubusercontent.com/12828725/191542318-969707da-63e6-418d-b902-8e3c7ddfd394.png"/>
 
-# Mark segments on video pairs
+# Mark segments on multi-camera videos
 
 <p align="center">
   <a href="#Overview">Overview</a> •
@@ -38,6 +38,7 @@ Segment defines by two tags: app assigns tag with string value `begin-<segment-i
 6. Once videos are selected user can preview and manage existing segments. 
 7. Press `Start segments tagging` button to start tagging, i.e. create or delete tags segments.
 8. On videos table at **Step 2** there is also column `STATUS` that helps to navigate what videos are finished and what are in progress.
+9. Stop the app manually
 
 # Screenshot
 
