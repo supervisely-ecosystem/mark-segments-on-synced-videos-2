@@ -1,2 +1,2 @@
-supervisely==v6.63.10
+supervisely==6.63.10
 # black # for code formatting
