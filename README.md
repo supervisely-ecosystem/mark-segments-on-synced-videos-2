@@ -1,6 +1,6 @@
 <div align="center" markdown>
 
-<img alt="poster" src="https://user-images.githubusercontent.com/12828725/191542318-969707da-63e6-418d-b902-8e3c7ddfd394.png"/>
+<img src="https://user-images.githubusercontent.com/12828725/191542318-969707da-63e6-418d-b902-8e3c7ddfd394.png"/>
 
 # Mark segments on multi-camera videos
 
