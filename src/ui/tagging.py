@@ -314,9 +314,9 @@ def close_video_pair():
 def mark_videos_as_done():
     left_id = left_video.player.video_id
     right_id = right_video.player.video_id
-    left_tags = g.api.video.tag.get_list(left_id, g.project_meta)
+    left_tags = g.api.video.tag.download_list(left_id, g.project_meta)
     select_videos.set_video_status(left_id, left_tags, STATUS_DONE, update=True)
     if left_id != right_id:
-        right_tags = g.api.video.tag.get_list(right_id, g.project_meta)
+        right_tags = g.api.video.tag.download_list(right_id, g.project_meta)
         select_videos.set_video_status(right_id, right_tags, STATUS_DONE, update=True)
     _close_video_pair()
