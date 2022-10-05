@@ -1,2 +1,2 @@
-supervisely==6.66.4
+supervisely==6.66.5
 # black # for code formatting
