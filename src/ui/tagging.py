@@ -168,8 +168,8 @@ def _show_segments():
     working_tag_meta = get_tag_meta()
     left_id = left_video.player.video_id
     right_id = right_video.player.video_id
-    left_tags = g.api.video.tag.get_list(left_id, g.project_meta)
-    right_tags = g.api.video.tag.get_list(right_id, g.project_meta)
+    left_tags = g.api.video.tag.download_list(left_id, g.project_meta)
+    right_tags = g.api.video.tag.download_list(right_id, g.project_meta)
     pairs = defaultdict(lambda: {"begin_tag": None, "end_tag": None})
 
     def _process_segment_tags(video_tags: sly.VideoTagCollection, pair_key, prefix):
