@@ -67,7 +67,7 @@ card = Card(
     "4️⃣ Assigned tags",
     "Create, preview, navigate and manage tagged segments",
     content=Container([table]),
-    slot_content=Flexbox(
+    content_top_right=Flexbox(
         [done_tagging_btn, close_pair_btn],
     ),
     lock_message='Press 👆 "Show segments" button to create and manage segments',
