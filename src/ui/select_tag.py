@@ -49,7 +49,7 @@ card = Card(
     "Select key-value(str) tag for labeling",
     collapsable=True,
     content=Container([existing_tag_layout, new_tag_layout], gap=0),
-    slot_content=change_tag_btn,
+    content_top_right=change_tag_btn,
 )
 
 
