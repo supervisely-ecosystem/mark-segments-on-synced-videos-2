@@ -30,7 +30,7 @@ card = Card(
     "Select different videos for left and right panels. To mark segments on single video just select same video for both panels",
     collapsable=True,
     content=table,
-    slot_content=reselect_pair_btn,
+    content_top_right=reselect_pair_btn,
     lock_message=START_LOCK_MESSAGE,
 )
 card.lock()
