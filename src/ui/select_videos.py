@@ -1,7 +1,7 @@
 import pandas as pd
 import supervisely as sly
-from supervisely.app.exceptions import DialogWindowError
 from supervisely.app.widgets import Card, Table, Button
+from supervisely._utils import abs_url
 import src.globals as g
 import src.ui.left_video as left_video
 import src.ui.right_video as right_video
@@ -70,22 +70,29 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
     if datapoint.button_name is None:
         return
     video_id = datapoint.row[COL_ID]
-    g.api.video.get_info_by_id(video_id)
+    video_info = g.api.video.get_info_by_id(video_id)
+    video_url = abs_url(video_info.path_original)
+    video_type = video_info.file_meta["mime"]
     if datapoint.button_name == COL_SET_LEFT:
-        left_video.player.set_video(video_id)
+        g.choosed_videos["left_video"] = video_info
+        left_video.player.set_video(url=video_url, mime_type=video_type)
         left_video.preview.set_video_id(video_id)
         left_video.preview.show()
+        left_video.checkbox_container.show()
         left_video.card.unlock()
     elif datapoint.button_name == COL_SET_RIGHT:
-        right_video.player.set_video(video_id)
+        g.choosed_videos["right_video"] = video_info
+        right_video.player.set_video(url=video_url, mime_type=video_type)
         right_video.preview.set_video_id(video_id)
         right_video.preview.show()
         right_video.sync_btn.show()
+        right_video.checkbox_container.show()
         right_video.card.unlock()
 
-    if left_video.player.video_id is not None and right_video.player.video_id is not None:
+    if left_video.player.url is not None and right_video.player.url is not None:
         tagging.show_segments_btn.enable()
         tagging.help_text.hide()
+        reselect_pair_btn.show()
 
 
 def set_video_status(video_id, existing_tags: sly.VideoTagCollection, value, update=False):
@@ -106,11 +113,14 @@ def reselect_video_pair():
 
     tagging.card.lock()
     tagging.start_tagging_btn.hide()
+    tagging.mark_segment_btn.hide()
     tagging.show_segments_btn.show()
     tagging.show_segments_btn.disable()
     reselect_pair_btn.hide()
     tagging.help_text.show()
     tagging.left_video.card.lock()
     tagging.right_video.card.lock()
+    tagging.done_tagging_btn.hide()
+    tagging.close_pair_btn.hide()
     tagging.select_videos.card.uncollapse()
     tagging.select_videos.card.unlock()

@@ -6,7 +6,7 @@ load_dotenv("local.env")
 load_dotenv(os.path.expanduser("~/supervisely.env"))
 
 import supervisely as sly
-from supervisely.app.widgets import Card, Container, VideoThumbnail
+from supervisely.app.widgets import Container
 import src.globals as g
 import src.ui.input_dataset as input_dataset
 import src.ui.select_tag as select_tag

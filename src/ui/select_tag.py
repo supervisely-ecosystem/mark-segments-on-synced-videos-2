@@ -105,6 +105,11 @@ def finish_step():
             title="Tag is not selected",
             description="Please, select existing tag or create a new one before start labeling",
         )
+    if tag_name == g.technical_tag_name:
+        raise DialogWindowError(
+            title="Default technical tag is selected",
+            description="Please, select another tag or create a new tag before start labeling",
+        )
     select_tag.disable()
     create_tag_btn.disable()
     finish_step_btn.hide()
@@ -146,3 +151,27 @@ def get_tag_meta() -> TagMeta:
             "Please, contact technical support",
         )
     return working_tag
+
+
+def get_attrs_tag_meta() -> TagMeta:
+    names = "Attributer"
+    attrs_tag = g.project_meta.get_tag_meta(names)
+    if attrs_tag is not None:
+        return attrs_tag
+    attrs_tag = sly.TagMeta(names, TagValueType.ANY_STRING)
+    project_meta = g.project_meta.add_tag_meta(attrs_tag)
+    g.api.project.update_meta(g.project_id, project_meta)
+    g.api.project.pull_meta_ids(g.project_id, project_meta)
+    return attrs_tag
+
+
+def get_note_tag_meta() -> TagMeta:
+    names = "Note"
+    note_tag = g.project_meta.get_tag_meta(names)
+    if note_tag is not None:
+        return note_tag
+    note_tag = sly.TagMeta(names, TagValueType.ONEOF_STRING, possible_values=g.possible_values)
+    project_meta = g.project_meta.add_tag_meta(note_tag)
+    g.api.project.update_meta(g.project_id, project_meta)
+    g.api.project.pull_meta_ids(g.project_id, project_meta)
+    return note_tag
