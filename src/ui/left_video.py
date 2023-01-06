@@ -1,10 +1,10 @@
-import supervisely as sly
-from supervisely.app.widgets import Card, Video, VideoThumbnail, Container
+from supervisely.app.widgets import Card, Container, VideoPlayer, VideoThumbnail
 
 preview = VideoThumbnail()
 preview.hide()
 
-player = Video()
+player = VideoPlayer()
+
 
 card = Card(
     "📹 Video #1",

@@ -1,12 +1,13 @@
-import supervisely as sly
-from supervisely.app.widgets import Card, Video, VideoThumbnail, Container, Button
+from supervisely.app.widgets import Button, Card, Container
+from supervisely.app.widgets import VideoPlayer, VideoThumbnail
 
 import src.ui.left_video as left_video
 
 preview = VideoThumbnail()
 preview.hide()
 
-player = Video()
+player = VideoPlayer()
+
 sync_btn = Button("Sync frame from left video", button_type="text", icon="zmdi zmdi-time")
 sync_btn.hide()
 
@@ -21,5 +22,5 @@ card.lock()
 
 @sync_btn.click
 def sync_with_left():
-    left_frame = left_video.player.get_current_frame()
-    player.set_current_frame(left_frame)
+    left_timestamp = left_video.player.get_current_timestamp()
+    player.set_current_timestamp(left_timestamp)

@@ -1,11 +1,19 @@
+import io
+import os
 import pandas as pd
 import supervisely as sly
-from supervisely.app.exceptions import DialogWindowError
 from supervisely.app.widgets import Card, Table, Button
+from supervisely._utils import abs_url
+
 import src.globals as g
+import src.ui.files as f
 import src.ui.left_video as left_video
 import src.ui.right_video as right_video
 import src.ui.tagging as tagging
+import src.ui.attributes as attrs
+
+
+pairs_dir_name = None
 
 COL_ID = "id".upper()
 COL_VIDEO = "video".upper()
@@ -26,14 +34,13 @@ reselect_pair_btn = Button("Select other videos", icon="zmdi zmdi-rotate-left")
 reselect_pair_btn.hide()
 
 card = Card(
-    "3️⃣ Select left and right video",
+    "2️⃣ Select left and right video",
     "Select different videos for left and right panels. To mark segments on single video just select same video for both panels",
     collapsable=True,
     content=table,
     content_top_right=reselect_pair_btn,
     lock_message=START_LOCK_MESSAGE,
 )
-card.lock()
 
 
 def build_table():
@@ -70,22 +77,39 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
     if datapoint.button_name is None:
         return
     video_id = datapoint.row[COL_ID]
-    g.api.video.get_info_by_id(video_id)
+    video_info = g.api.video.get_info_by_id(video_id)
+    video_url = abs_url(video_info.path_original)
+    video_type = video_info.file_meta["mime"]
     if datapoint.button_name == COL_SET_LEFT:
-        left_video.player.set_video(video_id)
+        g.choosed_videos["left_video"] = video_info
+        left_video.player.set_video(url=video_url, mime_type=video_type)
         left_video.preview.set_video_id(video_id)
         left_video.preview.show()
         left_video.card.unlock()
     elif datapoint.button_name == COL_SET_RIGHT:
-        right_video.player.set_video(video_id)
+        g.choosed_videos["right_video"] = video_info
+        right_video.player.set_video(url=video_url, mime_type=video_type)
         right_video.preview.set_video_id(video_id)
         right_video.preview.show()
         right_video.sync_btn.show()
         right_video.card.unlock()
 
-    if left_video.player.video_id is not None and right_video.player.video_id is not None:
-        tagging.show_segments_btn.enable()
+    global pairs_dir_name
+    if left_video.player.url is not None and right_video.player.url is not None:
         tagging.help_text.hide()
+        tagging.show_segments_btn.enable()
+        tagging.show_segments_btn.show()
+        reselect_pair_btn.show()
+        tagging.start_tagging_btn.hide()
+        tagging.mark_segment_btn.hide()
+        left_video_id = g.choosed_videos["left_video"].id
+        right_video_id = g.choosed_videos["right_video"].id
+        pairs_dir_name = os.path.join(f.ds_path, f"video-pair-{left_video_id}-{right_video_id}")
+
+        if f"video-pair-{left_video_id}-{right_video_id}" not in os.listdir(f.ds_path):
+            os.mkdir(pairs_dir_name)
+        if not g.api.file.dir_exists(g.TEAM_ID, f"/{pairs_dir_name}/"):
+            g.api.file.upload_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
 
 
 def set_video_status(video_id, existing_tags: sly.VideoTagCollection, value, update=False):
@@ -102,15 +126,19 @@ def set_video_status(video_id, existing_tags: sly.VideoTagCollection, value, upd
 
 @reselect_pair_btn.click
 def reselect_video_pair():
-    import src.ui.tagging as tagging
-
-    tagging.card.lock()
+    tagging.card.hide()
     tagging.start_tagging_btn.hide()
+    tagging.mark_segment_btn.hide()
     tagging.show_segments_btn.show()
     tagging.show_segments_btn.disable()
-    reselect_pair_btn.hide()
     tagging.help_text.show()
     tagging.left_video.card.lock()
     tagging.right_video.card.lock()
-    tagging.select_videos.card.uncollapse()
-    tagging.select_videos.card.unlock()
+    tagging.done_tagging_btn.hide()
+    tagging.close_pair_btn.hide()
+    card.uncollapse()
+    card.unlock()
+    reselect_pair_btn.hide()
+    tagging.start_tagging_btn.hide()
+    tagging.mark_segment_btn.hide()
+    attrs.card.hide()
