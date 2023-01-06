@@ -4,3 +4,4 @@ supervisely
 *.pkl
 __pycache__
 results
+mark-segments-on-synced-videos-2-files
