@@ -139,12 +139,19 @@ def display_attributes(tags: sly.TagCollection, t_error: str = None):
     err_str = ""
     attrs = []
     if t_error is not None:
-        err_str = f"""<span style='
-            padding: 4px;
-            background-color: mistyrose;
-            border-radius: 3px;
-            margin-right: 3px;
-        '>{t_error}</span>"""
+        err_str = f"""<p style='
+            margin: 2px;
+            padding: 2px;
+        '>
+            <span style='
+                padding: 2px;
+                color: red;
+                background-color: mistyrose;
+                border-radius: 2px;
+            '>
+                {t_error}
+            </span>
+        </p>"""
     if len(tags) == 0:
         return None
     for tag in tags:

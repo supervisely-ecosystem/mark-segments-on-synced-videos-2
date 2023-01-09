@@ -360,6 +360,8 @@ def _get_timestamp_from_str(str):
 
 
 def _close_video_pair():
+    if select_videos.pairs_dir_name is not None:
+        sly.fs.clean_dir(select_videos.pairs_dir_name)
     card.hide()
     close_pair_btn.hide()
     mark_segment_btn.hide()
