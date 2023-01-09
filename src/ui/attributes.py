@@ -97,7 +97,7 @@ def show_attrs_card(segment_id):
     if Path(segment_filepath).exists():
         if Path(segment_filepath).is_file():
             os.remove(segment_filepath)
-    g.api.file.download(g.TEAM_ID, f"/{segment_filepath}", segment_filepath)
+    g.api.file.download(g.TEAM_ID, segment_filepath, segment_filepath)
     with io.open(segment_filepath) as f:
         tags_to_delete = []
         data = json.load(f)
