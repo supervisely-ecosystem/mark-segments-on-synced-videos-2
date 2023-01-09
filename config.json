@@ -1,5 +1,6 @@
 {
-  "name": "Mark segments on multi-camera videos",
+  "type": "app",
+  "name": "Mark segments on multi-camera videos-2",
   "version": "2.0.0",
   "description": "Tag segments (begin and end) on single or multiple videos in dual-panel view",
   "categories": ["videos", "labeling"],

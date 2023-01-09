@@ -66,7 +66,7 @@ columns = [
 
 lines: List = None
 df: pd.DataFrame = None
-table = Table(fixed_cols=1)
+table = Table()
 
 card = Card(
     "3️⃣ Assigned tags",
