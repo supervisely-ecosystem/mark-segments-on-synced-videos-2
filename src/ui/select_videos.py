@@ -107,9 +107,7 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
 
         if f"video-pair-{left_video_id}-{right_video_id}" not in os.listdir(f.ds_path):
             os.mkdir(pairs_dir_name)
-            sly.logger.info(f'new directory had been created: {pairs_dir_name}')
         if not g.api.file.dir_exists(g.TEAM_ID, pairs_dir_name):
-            sly.logger.info(f'{pairs_dir_name} was uploaded to team files')
             g.api.file.upload_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
 
 

@@ -250,7 +250,6 @@ def _show_segments():
 
     if g.api.file.dir_exists(g.TEAM_ID, pairs_dir_name):
         sly.fs.remove_dir(pairs_dir_name)
-        sly.logger.info(f"All data from directory ({pairs_dir_name}) was downloaded")
         g.api.file.download_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
     else:
         g.api.file.upload_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
