@@ -247,10 +247,9 @@ def _show_segments():
     right_video_id = g.choosed_videos["right_video"].id
     pairs_dir_name = os.path.join(f.ds_path, f"video-pair-{left_video_id}-{right_video_id}")
 
-
     if g.api.file.dir_exists(g.TEAM_ID, pairs_dir_name):
         sly.fs.remove_dir(pairs_dir_name)
-        sly.logger.info(f'{pairs_dir_name} directory was downloaded')
+        sly.logger.info(f"All data from directory ({pairs_dir_name}) was downloaded")
         g.api.file.download_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
     else:
         g.api.file.upload_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
