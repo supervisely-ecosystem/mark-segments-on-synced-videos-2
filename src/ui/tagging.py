@@ -148,7 +148,7 @@ def create_segment():
         tags = sly.TagCollection()
         row = _create_row(segment_id, new_segment_file, left_timestamp, right_timestamp, tags)
         table.insert_row(row)
-        
+
     except Exception as e:
         raise e
     finally:
@@ -250,8 +250,8 @@ def _show_segments():
     right_video_id = g.choosed_videos["right_video"].id
     pairs_dir_name = os.path.join(f.ds_path, f"video-pair-{left_video_id}-{right_video_id}")
 
-    if g.api.file.dir_exists(g.TEAM_ID, pairs_dir_name):
-        g.api.file.download_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
+    if g.api.file.dir_exists(g.TEAM_ID, f"/{pairs_dir_name}"):
+        g.api.file.download_directory(g.TEAM_ID, f"{pairs_dir_name}", pairs_dir_name)
     if not sly.fs.dir_exists(pairs_dir_name):
         sly.fs.mkdir(pairs_dir_name)
     # else:
