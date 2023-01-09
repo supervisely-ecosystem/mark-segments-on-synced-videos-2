@@ -261,7 +261,7 @@ def _show_segments():
 def _build_df(pairs_dir_name):
     global lines, df
     lines = []
-    if not sly.fs.file_exists(pairs_dir_name):
+    if not sly.fs.dir_exists(pairs_dir_name):
         df = pd.DataFrame(lines, columns=columns)
         table.read_pandas(df)
         return
