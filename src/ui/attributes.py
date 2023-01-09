@@ -51,8 +51,11 @@ def set_tags():
     )
     for i, tm_json in enumerate(filtered_project_metas_json):
         tm = g.project_meta.get_tag_meta(tm_json["name"])
-        tag_value = tag_inputs[i].get_value()
-        if tag_value is not None:
+        tag_value = tag_inputs[
+            i
+        ].get_value()  # TODO: update after InputTag widget will be changed (pr)
+        # tag_value = tag_inputs[i].value
+        if tag_value is not None and tag_value != "":
             if type(tag_value) is bool:
                 tag_value = None
             tag = sly.Tag(tm, tag_value)
@@ -117,13 +120,19 @@ def show_attrs_card(segment_id):
             filter(lambda x: x["name"] != g.technical_tag_name, project_metas_json)
         )
         for i, tm in enumerate(filtered_project_metas):
-            tag_inputs[i].set(None)
+            tag_inputs[i].set(None)  # TODO: update after InputTag widget will be changed (pr)
+            # tag_inputs[i].deactivate()
+            # tag_inputs[i].value = None
             for tag in tags:
                 if tag.meta.name == tm["name"]:
                     value = tag.value
                     if tag.meta.value_type == str(TagValueType.NONE):
                         value = True
-                    tag_inputs[i].set(value, tag)
+                    tag_inputs[i].set(
+                        value, tag
+                    )  # TODO: update after InputTag widget will be changed (pr)
+                    # tag_inputs[i].value = value
+                    # tag_inputs[i].set(tag)
 
 
 def display_attributes(tags: sly.TagCollection, t_error: str = None):
@@ -147,7 +156,18 @@ def display_attributes(tags: sly.TagCollection, t_error: str = None):
             attrs.append(f"{tag.name}: {tag.value}")
     attrs_str = " ".join(
         [
-            f"<span style='padding: 4px; background-color: lemonchiffon;'>{attr}</span>"
+            f"""<p style='
+                margin: 2px;
+                padding: 2px;
+            '>
+                <span style='
+                    padding: 2px;
+                    background-color: antiquewhite;
+                    border-radius: 2px;
+                '>
+                    • {attr}
+                </span>
+            </p>"""
             for attr in attrs
         ]
     )
