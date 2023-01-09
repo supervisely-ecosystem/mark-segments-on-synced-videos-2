@@ -158,8 +158,6 @@ def start_tagging_ui():
 
 @close_pair_btn.click
 def close_video_pair():
-    if select_videos.pairs_dir_name is not None:
-        sly.fs.clean_dir(select_videos.pairs_dir_name)
     _close_video_pair()
 
 
@@ -242,11 +240,10 @@ def _show_segments():
     pairs_dir_name = os.path.join(f.ds_path, f"video-pair-{left_video_id}-{right_video_id}")
 
     if g.api.file.dir_exists(g.TEAM_ID, pairs_dir_name):
-        g.api.file.download_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
-    if not sly.fs.dir_exists(pairs_dir_name):
-        sly.fs.mkdir(pairs_dir_name)
-    # else:
-    #     g.api.file.upload_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
+         sly.fs.remove_dir(pairs_dir_name)
+         g.api.file.download_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
+    else:
+         g.api.file.upload_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
 
     left_tags = g.api.video.tag.download_list(left_video_id, g.project_meta)
     right_tags = g.api.video.tag.download_list(right_video_id, g.project_meta)
@@ -261,10 +258,6 @@ def _show_segments():
 def _build_df(pairs_dir_name):
     global lines, df
     lines = []
-    if not sly.fs.dir_exists(pairs_dir_name):
-        df = pd.DataFrame(lines, columns=columns)
-        table.read_pandas(df)
-        return
     segments_files = os.listdir(pairs_dir_name)
     if len(segments_files) > 0:
         for file in segments_files:
