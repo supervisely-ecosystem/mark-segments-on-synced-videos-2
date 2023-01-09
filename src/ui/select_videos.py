@@ -105,8 +105,10 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
         right_video_id = g.choosed_videos["right_video"].id
         pairs_dir_name = os.path.join(f.ds_path, f"video-pair-{left_video_id}-{right_video_id}")
 
-        if f"video-pair-{left_video_id}-{right_video_id}" in os.listdir(f.ds_path):
-            sly.fs.clean_dir(pairs_dir_name)
+        if f"video-pair-{left_video_id}-{right_video_id}" not in os.listdir(f.ds_path):
+            os.mkdir(pairs_dir_name)
+        if not g.api.file.dir_exists(g.TEAM_ID, pairs_dir_name):
+            g.api.file.upload_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
 
 
 def set_video_status(video_id, existing_tags: sly.VideoTagCollection, value, update=False):
