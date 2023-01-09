@@ -125,6 +125,8 @@ def set_video_status(video_id, existing_tags: sly.VideoTagCollection, value, upd
 
 @reselect_pair_btn.click
 def reselect_video_pair():
+    if pairs_dir_name is not None:
+        sly.fs.clean_dir(pairs_dir_name)
     tagging.card.hide()
     tagging.start_tagging_btn.hide()
     tagging.mark_segment_btn.hide()
