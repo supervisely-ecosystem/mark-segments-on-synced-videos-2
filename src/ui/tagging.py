@@ -249,9 +249,10 @@ def _show_segments():
 
     print(pairs_dir_name)
     print(g.api.file.dir_exists(g.TEAM_ID, pairs_dir_name))
-    print(g.api.file.dir_exists(g.TEAM_ID, f'/{pairs_dir_name}'))
+    print(g.api.file.dir_exists(g.TEAM_ID, f"/{pairs_dir_name}"))
+    print(g.api.file.dir_exists(g.TEAM_ID, pairs_dir_name))
 
-    if g.api.file.dir_exists(g.TEAM_ID, pairs_dir_name):
+    if g.api.file.dir_exists(g.TEAM_ID, f"/{pairs_dir_name}"):
         sly.fs.remove_dir(pairs_dir_name)
         g.api.file.download_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
     else:
