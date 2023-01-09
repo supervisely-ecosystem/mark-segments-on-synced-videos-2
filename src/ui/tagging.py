@@ -118,7 +118,8 @@ def show_segments_ui():
 def create_segment():
     table.loading = True
     try:
-        segment_id = g.api.project.get_info_by_id(g.project_id).custom_data["segment_id"] + 1
+        segment_id = g.api.project.get_info_by_id(g.project_id).custom_data["segment_id"]
+        g.api.project.update_custom_data(g.project_id, {"segment_id": int(segment_id) + 1})
 
         new_segment_file = os.path.join(select_videos.pairs_dir_name, f"segment-{segment_id}.json")
 
@@ -147,7 +148,7 @@ def create_segment():
         tags = sly.TagCollection()
         row = _create_row(segment_id, new_segment_file, left_timestamp, right_timestamp, tags)
         table.insert_row(row)
-        g.api.project.update_custom_data(g.project_id, {"segment_id": int(segment_id) + 1})
+        
     except Exception as e:
         raise e
     finally:
