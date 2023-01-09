@@ -125,8 +125,16 @@ def create_segment():
         left_timestamp = left_video.player.get_current_timestamp()
         right_timestamp = right_video.player.get_current_timestamp()
         data = {
-            "left_timestamp": left_timestamp,
-            "right_timestamp": right_timestamp,
+            "left_video": {
+                "id": g.choosed_videos["left_video"].id,
+                "name": g.choosed_videos["left_video"].name,
+                "timestamp": left_timestamp,
+            },
+            "right_video": {
+                "id": g.choosed_videos["right_video"].id,
+                "name": g.choosed_videos["right_video"].name,
+                "timestamp": right_timestamp,
+            },
             "tags": [],
         }
 
@@ -240,10 +248,10 @@ def _show_segments():
     pairs_dir_name = os.path.join(f.ds_path, f"video-pair-{left_video_id}-{right_video_id}")
 
     if g.api.file.dir_exists(g.TEAM_ID, pairs_dir_name):
-         sly.fs.remove_dir(pairs_dir_name)
-         g.api.file.download_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
+        sly.fs.remove_dir(pairs_dir_name)
+        g.api.file.download_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
     else:
-         g.api.file.upload_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
+        g.api.file.upload_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
 
     left_tags = g.api.video.tag.download_list(left_video_id, g.project_meta)
     right_tags = g.api.video.tag.download_list(right_video_id, g.project_meta)
@@ -268,8 +276,8 @@ def _build_df(pairs_dir_name):
             with io.open(file_path) as j:
                 d = json.load(j)
                 segment_id = file_name.split("-")[-1]
-                left_timestamp = d["left_timestamp"]
-                right_timestamp = d["right_timestamp"]
+                left_timestamp = d["left_video"]["timestamp"]
+                right_timestamp = d["right_video"]["timestamp"]
                 for tag in d["tags"]:
                     tag_meta = g.project_meta.get_tag_meta(tag["name"])
                     if tag_meta is None:
