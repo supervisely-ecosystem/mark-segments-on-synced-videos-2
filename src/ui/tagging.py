@@ -125,8 +125,16 @@ def create_segment():
         left_timestamp = left_video.player.get_current_timestamp()
         right_timestamp = right_video.player.get_current_timestamp()
         data = {
-            "left_timestamp": left_timestamp,
-            "right_timestamp": right_timestamp,
+            "left_video": {
+                "id": g.choosed_videos["left_video"].id,
+                "name": g.choosed_videos["left_video"].name,
+                "timestamp": left_timestamp,
+            },
+            "right_video": {
+                "id": g.choosed_videos["right_video"].id,
+                "name": g.choosed_videos["right_video"].name,
+                "timestamp": right_timestamp,
+            },
             "tags": [],
         }
 
@@ -275,8 +283,8 @@ def _build_df(pairs_dir_name):
             with io.open(file_path) as j:
                 d = json.load(j)
                 segment_id = file_name.split("-")[-1]
-                left_timestamp = d["left_timestamp"]
-                right_timestamp = d["right_timestamp"]
+                left_timestamp = d["left_video"]["timestamp"]
+                right_timestamp = d["right_video"]["timestamp"]
                 for tag in d["tags"]:
                     tag_meta = g.project_meta.get_tag_meta(tag["name"])
                     if tag_meta is None:
