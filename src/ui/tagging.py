@@ -167,8 +167,6 @@ def start_tagging_ui():
 
 @close_pair_btn.click
 def close_video_pair():
-    if select_videos.pairs_dir_name is not None:
-        sly.fs.clean_dir(select_videos.pairs_dir_name)
     _close_video_pair()
 
 
@@ -250,8 +248,12 @@ def _show_segments():
     right_video_id = g.choosed_videos["right_video"].id
     pairs_dir_name = os.path.join(f.ds_path, f"video-pair-{left_video_id}-{right_video_id}")
 
+    if f"video-pair-{left_video_id}-{right_video_id}" in os.listdir(f.ds_path):
+        sly.fs.remove_dir(pairs_dir_name)
+    sly.logger.info(g.api.file.dir_exists(g.TEAM_ID, f"/{pairs_dir_name}"))
+    sly.logger.info(g.api.file.dir_exists(g.TEAM_ID, pairs_dir_name))
     if g.api.file.dir_exists(g.TEAM_ID, f"/{pairs_dir_name}"):
-        g.api.file.download_directory(g.TEAM_ID, f"{pairs_dir_name}", pairs_dir_name)
+        g.api.file.download_directory(g.TEAM_ID, f"/{pairs_dir_name}", pairs_dir_name)
     if not sly.fs.dir_exists(pairs_dir_name):
         sly.fs.mkdir(pairs_dir_name)
     # else:
