@@ -28,4 +28,4 @@ else:
 def clean_local_video_pair_dir(left_video_id: int, right_video_id: int):
     pairs_dir_name = os.path.join(ds_path, f"video-pair-{left_video_id}-{right_video_id}")
     if f"video-pair-{left_video_id}-{right_video_id}" in os.listdir(ds_path):
-        sly.fs.clean_dir(pairs_dir_name)
+        rmtree(pr_path)
