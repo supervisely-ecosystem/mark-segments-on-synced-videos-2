@@ -200,7 +200,7 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
             segment_filepath = os.path.join(
                 select_videos.pairs_dir_name, f"segment-{segment_id}.json"
             )
-            g.api.file.remove(g.TEAM_ID, f"/{segment_filepath}")
+            g.api.file.remove(g.TEAM_ID, segment_filepath)
             os.remove(segment_filepath)
 
             table.delete_row(COL_ID, segment_id)
@@ -239,9 +239,9 @@ def _show_segments():
     right_video_id = g.choosed_videos["right_video"].id
     pairs_dir_name = os.path.join(f.ds_path, f"video-pair-{left_video_id}-{right_video_id}")
 
-    if g.api.file.dir_exists(g.TEAM_ID, f"/{pairs_dir_name}/"):
+    if g.api.file.dir_exists(g.TEAM_ID, pairs_dir_name):
         sly.fs.remove_dir(pairs_dir_name)
-        g.api.file.download_directory(g.TEAM_ID, f"/{pairs_dir_name}/", pairs_dir_name)
+        g.api.file.download_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
     else:
         g.api.file.upload_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
 
@@ -302,7 +302,7 @@ def _create_row(
 ):
     attrs_str = None
 
-    file_info = g.api.file.get_info_by_path(g.TEAM_ID, f"/{file_path}")
+    file_info = g.api.file.get_info_by_path(g.TEAM_ID, file_path)
     if file_info is not None:
         created_at = _get_readable_datetime(file_info.created_at)
 

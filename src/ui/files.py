@@ -3,8 +3,15 @@ from shutil import rmtree
 
 import src.globals as g
 
-pr_path = os.path.join(g.DATA_DIR, f"project-{g.project_info.id}")
-if f"project-{g.project_info.id}" not in os.listdir(g.DATA_DIR):
+app_path = os.path.join(g.DATA_DIR, "mark-segments-on-synced-videos-2-files")
+if "mark-segments-on-synced-videos-2-files" not in os.listdir(g.DATA_DIR):
+    os.mkdir(app_path)
+else:
+    rmtree(app_path)
+    os.mkdir(app_path)
+
+pr_path = os.path.join(app_path, f"project-{g.project_info.id}")
+if f"project-{g.project_info.id}" not in os.listdir(app_path):
     os.mkdir(pr_path)
 else:
     rmtree(pr_path)
