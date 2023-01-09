@@ -250,10 +250,8 @@ def _show_segments():
 
     if f"video-pair-{left_video_id}-{right_video_id}" in os.listdir(f.ds_path):
         sly.fs.remove_dir(pairs_dir_name)
-    sly.logger.info(g.api.file.dir_exists(g.TEAM_ID, f"/{pairs_dir_name}"))
-    sly.logger.info(g.api.file.dir_exists(g.TEAM_ID, pairs_dir_name))
-    if g.api.file.dir_exists(g.TEAM_ID, f"/{pairs_dir_name}"):
-        g.api.file.download_directory(g.TEAM_ID, f"/{pairs_dir_name}", pairs_dir_name)
+    if g.api.file.dir_exists(g.TEAM_ID, pairs_dir_name):
+        g.api.file.download_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
     if not sly.fs.dir_exists(pairs_dir_name):
         sly.fs.mkdir(pairs_dir_name)
     # else:
@@ -272,7 +270,7 @@ def _show_segments():
 def _build_df(pairs_dir_name):
     global lines, df
     lines = []
-    if not sly.fs.file_exists(pairs_dir_name):
+    if not sly.fs.dir_exists(pairs_dir_name):
         df = pd.DataFrame(lines, columns=columns)
         table.read_pandas(df)
         return
