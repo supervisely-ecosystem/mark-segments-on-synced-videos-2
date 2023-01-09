@@ -117,6 +117,7 @@ def show_segments_ui():
 @mark_segment_btn.click
 def create_segment():
     table.loading = True
+    card.unlock()
     try:
         segment_id = g.api.project.get_info_by_id(g.project_id).custom_data["segment_id"] + 1
 
