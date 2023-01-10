@@ -4,7 +4,7 @@
   "version": "2.0.0",
   "description": "Tag segments (begin and end) with custom attributes on single or multiple videos in dual-panel view",
   "categories": ["videos", "labeling"],
-  "icon": "https://user-images.githubusercontent.com/12828725/191491983-41c25c67-b6d3-4316-8c35-fe382166a312.png",
+  "icon": "https://user-images.githubusercontent.com/12828725/211641974-b6e0fb96-9aad-4453-a3a9-d8c5f7de19d2.png",
   "poster": "https://user-images.githubusercontent.com/12828725/191542318-969707da-63e6-418d-b902-8e3c7ddfd394.png",
   "context_menu": {
     "target": ["videos_dataset"]
