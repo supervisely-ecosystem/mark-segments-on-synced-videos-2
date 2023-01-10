@@ -36,8 +36,6 @@ def set_tags():
     save_button.loading = True
     card.hide()
     t.table.loading = True
-    for tag_input in tag_inputs:
-        tag_input._component.disable()
     global data
     if current_segment_id is None or data is None:
         return
@@ -51,13 +49,12 @@ def set_tags():
     )
     for i, tm_json in enumerate(filtered_project_metas_json):
         tm = g.project_meta.get_tag_meta(tm_json["name"])
-        tag_value = tag_inputs[
-            i
-        ].get_value()  # TODO: update after InputTag widget will be changed (pr)
-        # tag_value = tag_inputs[i].value
-        if tag_value is not None and tag_value != "":
-            if type(tag_value) is bool:
+        if tag_inputs[i].is_active():
+            tag_value = tag_inputs[i].value
+            if tag_inputs[i].get_tag_meta().value_type == str(TagValueType.NONE):
                 tag_value = None
+            if tag_value == "":
+                continue
             tag = sly.Tag(tm, tag_value)
             updated_tags = updated_tags.add(tag)
 
@@ -88,8 +85,6 @@ def show_attrs_card(segment_id):
     card.show()
     card._title = f"📹 Attributes to segment-{segment_id}"
 
-    for tag_input in tag_inputs:
-        tag_input._component.enable()
     global current_segment_id, data
     data = None
     current_segment_id = segment_id
@@ -120,19 +115,15 @@ def show_attrs_card(segment_id):
             filter(lambda x: x["name"] != g.technical_tag_name, project_metas_json)
         )
         for i, tm in enumerate(filtered_project_metas):
-            tag_inputs[i].set(None)  # TODO: update after InputTag widget will be changed (pr)
-            # tag_inputs[i].deactivate()
-            # tag_inputs[i].value = None
+            tag_inputs[i].deactivate()
+            if tag_inputs[i].get_tag_meta().value_type == str(TagValueType.ANY_NUMBER):
+                tag_inputs[i].value = 0
+            if tag_inputs[i].get_tag_meta().value_type == str(TagValueType.ANY_STRING):
+                tag_inputs[i].value = ""
+
             for tag in tags:
                 if tag.meta.name == tm["name"]:
-                    value = tag.value
-                    if tag.meta.value_type == str(TagValueType.NONE):
-                        value = True
-                    tag_inputs[i].set(
-                        value, tag
-                    )  # TODO: update after InputTag widget will be changed (pr)
-                    # tag_inputs[i].value = value
-                    # tag_inputs[i].set(tag)
+                    tag_inputs[i].set(tag)
 
 
 def display_attributes(tags: sly.TagCollection, t_error: str = None):

@@ -254,8 +254,6 @@ def _show_segments():
         g.api.file.download_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
     if not sly.fs.dir_exists(pairs_dir_name):
         sly.fs.mkdir(pairs_dir_name)
-    # else:
-    #     g.api.file.upload_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
 
     left_tags = g.api.video.tag.download_list(left_video_id, g.project_meta)
     right_tags = g.api.video.tag.download_list(right_video_id, g.project_meta)
