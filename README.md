@@ -84,8 +84,8 @@ TEAM FILES
 ```
 
 >**Note:**
->All segment attributes are created and added to `TagCollection` object using the meta tags of current project and stored in a file after serialization to json.
->All segment attributes are extracted from json files and serialized into `TagCollection` object to manage them.
+>- All segment attributes are created and added to `TagCollection` object using the meta tags of current project and stored in a file after serialization to json.
+>- All segment attributes are extracted from json files and serialized into `TagCollection` object to manage them.
 >
 
 # Demo data
