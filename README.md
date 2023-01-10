@@ -1,6 +1,6 @@
 <div align="center" markdown>
 
-<img src="https://user-images.githubusercontent.com/12828725/191542318-969707da-63e6-418d-b902-8e3c7ddfd394.png"/>
+<img src="https://user-images.githubusercontent.com/115161827/211619537-9c5cda6a-788c-4baa-b27e-6a6800e6fdbe.png"/>
 
 # Mark attributed segments on multi-camera videos
 
@@ -98,4 +98,4 @@ TEAM FILES
 
 # Screenshot
 
-<img src="https://user-images.githubusercontent.com/12828725/191545391-54bd1189-7a74-4501-a708-0851203c9c07.png">
+<img src="https://user-images.githubusercontent.com/115161827/211619631-49ae0085-5d8a-441d-bdf4-c2fd970f19e0.png">
