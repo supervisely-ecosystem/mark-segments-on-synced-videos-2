@@ -2,7 +2,7 @@
 
 <img src="https://user-images.githubusercontent.com/12828725/191542318-969707da-63e6-418d-b902-8e3c7ddfd394.png"/>
 
-# Mark segments on multi-camera videos
+# Mark attributed segments on multi-camera videos
 
 <p align="center">
   <a href="#Overview">Overview</a> •
@@ -23,24 +23,70 @@
 
 Application allows tag and manage segments on video pairs in side-by-side view.
 
-In can work in two modes:
+It can work in two modes:
 
-- label segment on a single video
+- label segment on a single video (same video at left and right video players)
 - label segment on two videos (pair)
 
-Segment defines by two tags: app assigns tag with string value `begin-<segment-id>` on a specific frame on the left video and tag with string value `end-<segment-id>` on a specific frame on the right video.
+App assigns to segments identifiers, timestamps and video_id (for left and right videos) and saves it team files as a json file.
 
 # How to use
 
+0. Prepare all tags in current project Tags. You can create all type of tags: `none`, `any string`, `any number` and `one of string`. All created tags (except technical tag `status-segments-on-synced-videos`) can be used in the app to add segment attributes.
 1. Run application from the context menu of video dataset
 2. Open app
 3. **Step 1** shows the information about selected dataset with links to project / dataset.
-4. **Step 2** allows to select existing key-value(str) tag or create a new one.
-5. On **Step 3** it is needed to select left and right video by clicking on corresponding buttons in videos table.
-6. Once videos are selected user can preview and manage existing segments.
-7. Press `Start segments tagging` button to start tagging, i.e. create or delete tags segments.
-8. On videos table at **Step 2** there is also column `STATUS` that helps to navigate what videos are finished and what are in progress.
-9. Stop the app manually
+4. **Step 2** it is needed to select left and right video by clicking on corresponding buttons in videos table.
+5. Once videos are selected press `SHOW ALL SEGMENTS` button to preview and manage existing segments.
+6. Press `START SEGMENTS TAGGING` button to start tagging, i.e. create or delete tags segments.
+7. On videos table at **Step 2** there is also column `STATUS` that helps to navigate what videos are finished and what are in progress (press `MARK VIDEOS AS DONE` button).
+8. **Step 3** Press `EDIT` button on segments table to manage attributes of selected segment.
+9. **Step 4** Save segment attributes (press `SAVE` button).
+10. Stop the app manually.
+
+
+**Structure of folders in Team files in which segments will be stored:**
+```
+TEAM FILES
+├── ...
+├── sly-app-data
+│     └── mark-segments-on-synced-videos-2-files
+│           ├── <project-id>
+│           │   ├── <dataset-id>
+│           │   │   ├── video-pair-<left_video_id>-<right_video_id>
+│           │   │   │   ├──segment-1.json 
+│           │   │   │   ├──segment-2.json 
+│           │   │   │   └── ...
+│           │   │   ├── ...
+│           │   └── ...
+│           └── ...
+└── ...
+```
+**Structure of json files that store segment data:**
+```
+{
+    "left_video": {
+        "id": 17546758,
+        "name": "video-01-cam1.mp4",
+        "timestamp": 9.6
+    },
+    "right_video": {
+        "id": 17546757,
+        "name": "video-01-cam2.mp4",
+        "timestamp": 8.5
+    },
+    "tags": [
+        {
+        "name": "Missed entry" # None type tag in this example 
+        }
+    ]
+}
+```
+
+>**Note:**
+>All segment attributes are created and added to `TagCollection` object using the meta tags of current project and stored in a file after serialization to json.
+>All segment attributes are extracted from json files and serialized into a `TagCollection` object to manage them.
+>
 
 # Demo data
 
