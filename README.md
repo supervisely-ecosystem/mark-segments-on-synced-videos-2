@@ -28,7 +28,7 @@ It can work in two modes:
 - label segment on a single video (same video at left and right video players)
 - label segment on two videos (pair)
 
-App assigns to segments identifiers, attributes (tags), timestamps (for left and right videos) and saves it team files as a json file.
+App assigns to segments identifiers, attributes (tags), timestamps (for left and right videos) and saves in team files as a json file.
 
 # How to use
 
