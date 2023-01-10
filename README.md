@@ -41,7 +41,7 @@ App assigns to segments identifiers, attributes (tags), timestamps (for left and
 6. Press `START SEGMENTS TAGGING` button to start tagging, i.e. create or delete tags segments.
 7. On videos table at **Step 2** there is also column `STATUS` that helps to navigate what videos are finished and what are in progress (press `MARK VIDEOS AS DONE` button).
 8. **Step 3** Press `EDIT` button on segments table to manage attributes of selected segment.
-9. **Step 4** Save segment attributes (press `SAVE` button).
+9. **Step 4** Change and save segment attributes (press `SAVE` button).
 10. Stop the app manually.
 
 
