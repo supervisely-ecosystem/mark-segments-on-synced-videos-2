@@ -32,7 +32,7 @@ App assigns to segments identifiers, attributes (tags), timestamps (for left and
 
 # How to use
 
-0. Prepare all tags in current project Tags. You can create all type of tags: `none`, `any string`, `any number` and `one of string`. All created tags can be used in the app to add segment attributes (except technical tag `status-segments-on-synced-videos`).
+0. **Add project tags to the project.** You can create all type of project tags: `none`, `any string`, `any number` and `one of string`. All created tags can be used in the app to add segment attributes (except technical tag `status-segments-on-synced-videos`).
 1. Run application from the context menu of video dataset
 2. Open app
 3. **Step 1** shows the information about selected dataset with links to project / dataset.
