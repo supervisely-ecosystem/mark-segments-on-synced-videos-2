@@ -51,8 +51,8 @@ TEAM FILES
 ├── ...
 ├── sly-app-data
 │     └── mark-segments-on-synced-videos-2-files
-│           ├── <project-id>
-│           │   ├── <dataset-id>
+│           ├── project-<project_id>
+│           │   ├── dataset-<dataset_id>
 │           │   │   ├── video-pair-<left_video_id>-<right_video_id>
 │           │   │   │   ├──segment-1.json 
 │           │   │   │   ├──segment-2.json 
@@ -77,7 +77,7 @@ TEAM FILES
     },
     "tags": [
         {
-        "name": "Missed entry" # None type tag in this example 
+            "name": "Missed entry" 
         }
     ]
 }
@@ -85,7 +85,7 @@ TEAM FILES
 
 >**Note:**
 >All segment attributes are created and added to `TagCollection` object using the meta tags of current project and stored in a file after serialization to json.
->All segment attributes are extracted from json files and serialized into a `TagCollection` object to manage them.
+>All segment attributes are extracted from json files and serialized into `TagCollection` object to manage them.
 >
 
 # Demo data
