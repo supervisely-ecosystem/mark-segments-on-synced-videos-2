@@ -28,11 +28,11 @@ It can work in two modes:
 - label segment on a single video (same video at left and right video players)
 - label segment on two videos (pair)
 
-App assigns to segments identifiers, timestamps and video_id (for left and right videos) and saves it team files as a json file.
+App assigns to segments identifiers, attributes (tags), timestamps (for left and right videos) and saves it team files as a json file.
 
 # How to use
 
-0. Prepare all tags in current project Tags. You can create all type of tags: `none`, `any string`, `any number` and `one of string`. All created tags (except technical tag `status-segments-on-synced-videos`) can be used in the app to add segment attributes.
+0. Prepare all tags in current project Tags. You can create all type of tags: `none`, `any string`, `any number` and `one of string`. All created tags can be used in the app to add segment attributes (except technical tag `status-segments-on-synced-videos`).
 1. Run application from the context menu of video dataset
 2. Open app
 3. **Step 1** shows the information about selected dataset with links to project / dataset.
