@@ -45,6 +45,8 @@ App assigns to segments identifiers, attributes (tags), timestamps (for left and
 10. Stop the app manually.
 
 
+> If you perform some tags modification during working with app, just restart it. All created segments will be saved in team files and can be used in the next time the application will be launched.
+
 **Structure of folders in Team files in which segments will be stored:**
 ```
 TEAM FILES
