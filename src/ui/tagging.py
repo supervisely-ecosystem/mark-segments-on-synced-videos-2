@@ -234,6 +234,13 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
 
 @table.download_as_csv
 def get_clicked_cell():
+    left_id = g.choosed_videos["left_video"].id
+    right_id = g.choosed_videos["right_video"].id
+    pairs_dir_name = os.path.join(f.ds_path, f"video-pair-{left_id}-{right_id}")
+
+    if len(g.api.file.listdir(g.TEAM_ID, pairs_dir_name)) == 0:
+        empty_df = pd.DataFrame()
+        return empty_df
 
     df = table.to_pandas()
     df.index.name = "Segments info table"
