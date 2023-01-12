@@ -250,7 +250,7 @@ def get_clicked_cell():
             if value is None:
                 clean_text = ""
             else:
-                soup = BeautifulSoup(value, "html.parser")
+                soup = BeautifulSoup(str(value), "html.parser")
                 text = soup.get_text("", strip=True)
                 text = [s.strip() for s in text.split("• ")]
                 if len(text) > 1:
