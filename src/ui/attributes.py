@@ -36,49 +36,53 @@ def set_tags():
     save_button.loading = True
     card.hide()
     t.table.loading = True
-    global data
-    if current_segment_id is None or data is None:
-        return
-    segment_filepath = os.path.join(
-        select_videos.pairs_dir_name, f"segment-{current_segment_id}.json"
-    )
-    updated_tags = sly.TagCollection()
-    project_metas_json = g.project_meta.tag_metas.to_json()
-    filtered_project_metas_json = list(
-        filter(lambda x: x["name"] != g.technical_tag_name, project_metas_json)
-    )
-    for i, tm_json in enumerate(filtered_project_metas_json):
-        tm = g.project_meta.get_tag_meta(tm_json["name"])
-        if tag_inputs[i].is_active():
-            tag_value = tag_inputs[i].value
-            if tag_inputs[i].get_tag_meta().value_type == str(TagValueType.NONE):
-                tag_value = None
-            if tag_value == "":
-                continue
-            tag = sly.Tag(tm, tag_value)
-            updated_tags = updated_tags.add(tag)
-
-    data["tags"] = updated_tags.to_json()
-
-    with io.open(segment_filepath, "w", encoding="utf-8") as f:
-        str_ = json.dumps(
-            data, indent=4, sort_keys=True, separators=(",", ": "), ensure_ascii=False
+    try:
+        global data
+        if current_segment_id is None or data is None:
+            return
+        segment_filepath = os.path.join(
+            select_videos.pairs_dir_name, f"segment-{current_segment_id}.json"
         )
-        f.write(str(str_))
+        updated_tags = sly.TagCollection()
+        project_metas_json = g.project_meta.tag_metas.to_json()
+        filtered_project_metas_json = list(
+            filter(lambda x: x["name"] != g.technical_tag_name, project_metas_json)
+        )
+        for i, tm_json in enumerate(filtered_project_metas_json):
+            tm = g.project_meta.get_tag_meta(tm_json["name"])
+            if tag_inputs[i].is_active():
+                tag_value = tag_inputs[i].value
+                if tag_inputs[i].get_tag_meta().value_type == str(TagValueType.NONE):
+                    tag_value = None
+                if tag_value == "":
+                    continue
+                tag = sly.Tag(tm, tag_value)
+                updated_tags = updated_tags.add(tag)
 
-    g.api.file.remove(g.TEAM_ID, segment_filepath)
-    g.api.file.upload(g.TEAM_ID, segment_filepath, segment_filepath)
-    attrs_str = display_attributes(updated_tags)
-    t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_ATTRIBUTES, attrs_str)
+        data["tags"] = updated_tags.to_json()
 
-    t.table.loading = False
-    save_button.loading = False
-    data = None
-    t.card.unlock()
-    t.done_tagging_btn.show()
-    t.mark_segment_btn.show()
-    t.close_pair_btn.show()
-    t.start_tagging_btn.hide()
+        with io.open(segment_filepath, "w", encoding="utf-8") as f:
+            str_ = json.dumps(
+                data, indent=4, sort_keys=True, separators=(",", ": "), ensure_ascii=False
+            )
+            f.write(str(str_))
+
+        g.api.file.remove(g.TEAM_ID, segment_filepath)
+        g.api.file.upload(g.TEAM_ID, segment_filepath, segment_filepath)
+        attrs_str = display_attributes(updated_tags)
+        t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_ATTRIBUTES, attrs_str)
+
+    except Exception as e:
+        raise sly.logger.error(e, stack_info=False)
+    finally:
+        t.table.loading = False
+        t.card.unlock()
+        save_button.loading = False
+        data = None
+        t.done_tagging_btn.show()
+        t.mark_segment_btn.show()
+        t.close_pair_btn.show()
+        t.start_tagging_btn.hide()
 
 
 def show_attrs_card(segment_id):
@@ -92,38 +96,46 @@ def show_attrs_card(segment_id):
     if Path(segment_filepath).exists():
         if Path(segment_filepath).is_file():
             os.remove(segment_filepath)
-    g.api.file.download(g.TEAM_ID, segment_filepath, segment_filepath)
-    with io.open(segment_filepath) as f:
-        tags_to_delete = []
-        data = json.load(f)
-        for tag in data["tags"]:
-            tag_meta = g.project_meta.get_tag_meta(tag["name"])
-            if tag_meta is None:
-                tags_to_delete.append(tag)
-        if len(tags_to_delete) > 0:
-            for tag in tags_to_delete:
-                data["tags"].remove(tag)
-                sly.logger.warning(
-                    f'Can not load tag "{tag["name"]}". Please contact tech support.'
-                )
-        tags = sly.TagCollection.from_json(data["tags"], g.project_meta.tag_metas)
-        if len(tags_to_delete) > 0:
-            attrs_str = display_attributes(tags, t_error_msg)
-            t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_ATTRIBUTES, attrs_str)
-        project_metas_json = g.project_meta.tag_metas.to_json()
-        filtered_project_metas = list(
-            filter(lambda x: x["name"] != g.technical_tag_name, project_metas_json)
-        )
+    project_metas = g.project_meta.tag_metas
+    project_metas_json = project_metas.to_json()
+
+    filtered_project_metas = list(
+        filter(lambda x: x["name"] != g.technical_tag_name, project_metas_json)
+    )
+    if g.api.file.exists(g.TEAM_ID, segment_filepath):
+        g.api.file.download(g.TEAM_ID, segment_filepath, segment_filepath)
+        with io.open(segment_filepath) as f:
+            tags_to_delete = []
+            data = json.load(f)
+            for tag in data["tags"]:
+                tag_meta = g.project_meta.get_tag_meta(tag["name"])
+                if tag_meta is None:
+                    tags_to_delete.append(tag)
+            if len(tags_to_delete) > 0:
+                for tag in tags_to_delete:
+                    data["tags"].remove(tag)
+                    sly.logger.warning(
+                        f'Can not load tag "{tag["name"]}". Please contact tech support.'
+                    )
+            tags = sly.TagCollection.from_json(data["tags"], g.project_meta.tag_metas)
+            if len(tags_to_delete) > 0:
+                attrs_str = display_attributes(tags, t_error_msg)
+                t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_ATTRIBUTES, attrs_str)
+            
+            for i, tm in enumerate(filtered_project_metas):
+                tag_inputs[i].deactivate()
+                if tag_inputs[i].get_tag_meta().value_type == str(TagValueType.ANY_NUMBER):
+                    tag_inputs[i].value = 0
+                if tag_inputs[i].get_tag_meta().value_type == str(TagValueType.ANY_STRING):
+                    tag_inputs[i].value = ""
+
+                for tag in tags:
+                    if tag.meta.name == tm["name"]:
+                        tag_inputs[i].set(tag)
+    else:
         for i, tm in enumerate(filtered_project_metas):
             tag_inputs[i].deactivate()
-            if tag_inputs[i].get_tag_meta().value_type == str(TagValueType.ANY_NUMBER):
-                tag_inputs[i].value = 0
-            if tag_inputs[i].get_tag_meta().value_type == str(TagValueType.ANY_STRING):
-                tag_inputs[i].value = ""
-
-            for tag in tags:
-                if tag.meta.name == tm["name"]:
-                    tag_inputs[i].set(tag)
+    save_button.loading = False
 
 
 def display_attributes(tags: sly.TagCollection, t_error: str = None):
@@ -144,7 +156,7 @@ def display_attributes(tags: sly.TagCollection, t_error: str = None):
             </span>
         </p>"""
     if len(tags) == 0:
-        return None
+        return err_str
     for tag in tags:
         if tag.name == g.technical_tag_name:
             continue

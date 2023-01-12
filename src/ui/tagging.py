@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 import datetime
 import io
 import json
@@ -101,6 +102,7 @@ layout = Container(
 def show_segments_ui():
     table.loading = True
     try:
+        card.unlock()
         _show_segments()
         select_videos.card.lock(message=select_videos.LABELING_LOCK_MESSAGE)
         select_videos.card.collapse()
@@ -157,6 +159,7 @@ def create_segment():
 
 @start_tagging_btn.click
 def start_tagging_ui():
+    card.unlock()
     start_tagging_btn.hide()
     mark_segment_btn.show()
     done_tagging_btn.show()
@@ -227,6 +230,30 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
         segment_id = datapoint.row[COL_ID]
         attrs.show_attrs_card(segment_id)
     table.clear_selection()
+
+
+@table.download_as_csv
+def get_clicked_cell():
+
+    df = table.to_pandas()
+    df.index.name = "Segments info table"
+
+    for rowIndex, row in df.iterrows():
+        for columnIndex, value in row.items():
+            if value is None:
+                clean_text = ""
+            else:
+                soup = BeautifulSoup(value, "html.parser")
+                text = soup.get_text("", strip=True)
+                text = [s.strip() for s in text.split("• ")]
+                if len(text) > 1:
+                    text = text[1:]
+                clean_text = ", ".join(text)
+
+            df.at[rowIndex, columnIndex] = clean_text
+            new_df = df.drop([COL_EDIT, COL_PREVIEW, COL_DELETE], axis='columns')
+
+    return new_df
 
 
 @done_tagging_btn.click
@@ -326,8 +353,7 @@ def _create_row(
     if right_timestamp is not None:
         end_timestamp = _get_readable_timestamp(right_timestamp)
 
-    if len(tags) > 0:
-        attrs_str = attrs.display_attributes(tags, t_error)
+    attrs_str = attrs.display_attributes(tags, t_error)
 
     row = [
         segment_id,
