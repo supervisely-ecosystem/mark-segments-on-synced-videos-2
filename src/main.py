@@ -6,7 +6,7 @@ load_dotenv("local.env")
 load_dotenv(os.path.expanduser("~/supervisely.env"))
 
 import supervisely as sly
-from supervisely.app.widgets import Container
+from supervisely.app.widgets import Container, FileViewer
 
 import src.globals as g
 
@@ -20,13 +20,23 @@ import src.ui.tagging as tagging
 import src.ui.attributes as attrs
 
 
+test_card = FileViewer(files_list=[])
+test_card.loading = True
+
 input_cards = Container(
     widgets=[left_video.card, right_video.card], direction="horizontal", gap=15, fractions=[1, 1]
 )
 
 
 layout = Container(
-    widgets=[dataset_info.card, select_videos.card, input_cards, tagging.layout, attrs.card],
+    widgets=[
+        test_card,
+        dataset_info.card,
+        select_videos.card,
+        input_cards,
+        tagging.layout,
+        attrs.card,
+    ],
     direction="vertical",
     gap=15,
 )

@@ -234,33 +234,35 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
 
 @table.download_as_csv
 def get_clicked_cell():
-    left_id = g.choosed_videos["left_video"].id
-    right_id = g.choosed_videos["right_video"].id
-    pairs_dir_name = os.path.join(f.ds_path, f"video-pair-{left_id}-{right_id}")
+    return table.to_pandas()
 
-    if len(g.api.file.listdir(g.TEAM_ID, pairs_dir_name)) == 0:
-        empty_df = pd.DataFrame()
-        return empty_df
+    # left_id = g.choosed_videos["left_video"].id
+    # right_id = g.choosed_videos["right_video"].id
+    # pairs_dir_name = os.path.join(f.ds_path, f"video-pair-{left_id}-{right_id}")
 
-    df = table.to_pandas()
-    df.index.name = "Segments info table"
+    # if len(g.api.file.listdir(g.TEAM_ID, pairs_dir_name)) == 0:
+    #     empty_df = pd.DataFrame()
+    #     return empty_df
 
-    for rowIndex, row in df.iterrows():
-        for columnIndex, value in row.items():
-            if value is None:
-                clean_text = ""
-            else:
-                soup = BeautifulSoup(str(value), "html.parser")
-                text = soup.get_text("", strip=True)
-                text = [s.strip() for s in text.split("• ")]
-                if len(text) > 1:
-                    text = text[1:]
-                clean_text = ", ".join(text)
+    # df = table.to_pandas()
+    # df.index.name = "Segments info table"
 
-            df.at[rowIndex, columnIndex] = clean_text
-            new_df = df.drop([COL_EDIT, COL_PREVIEW, COL_DELETE], axis='columns')
+    # for rowIndex, row in df.iterrows():
+    #     for columnIndex, value in row.items():
+    #         if value is None:
+    #             clean_text = ""
+    #         else:
+    #             soup = BeautifulSoup(str(value), "html.parser")
+    #             text = soup.get_text("", strip=True)
+    #             text = [s.strip() for s in text.split("• ")]
+    #             if len(text) > 1:
+    #                 text = text[1:]
+    #             clean_text = ", ".join(text)
 
-    return new_df
+    #         df.at[rowIndex, columnIndex] = clean_text
+    #         new_df = df.drop([COL_EDIT, COL_PREVIEW, COL_DELETE], axis='columns')
+
+    # return new_df
 
 
 @done_tagging_btn.click
