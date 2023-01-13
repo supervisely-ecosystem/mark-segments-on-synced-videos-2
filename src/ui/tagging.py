@@ -233,7 +233,7 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
 
 
 @table.download_as_csv
-def get_clicked_cell():
+def download_segments_info_as_csv():
     left_id = g.choosed_videos["left_video"].id
     right_id = g.choosed_videos["right_video"].id
     pairs_dir_name = os.path.join(f.ds_path, f"video-pair-{left_id}-{right_id}")
