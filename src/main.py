@@ -18,15 +18,20 @@ import src.ui.left_video as left_video
 import src.ui.right_video as right_video
 import src.ui.tagging as tagging
 import src.ui.attributes as attrs
+import src.ui.team_files as team_files
 
 
 input_cards = Container(
     widgets=[left_video.card, right_video.card], direction="horizontal", gap=15, fractions=[1, 1]
 )
 
+info_cards = Container(
+    widgets=[dataset_info.card, team_files.card], direction="horizontal", gap=15, fractions=[1, 1]
+)
+
 
 layout = Container(
-    widgets=[dataset_info.card, select_videos.card, input_cards, tagging.layout, attrs.card],
+    widgets=[info_cards, select_videos.card, input_cards, tagging.layout, attrs.card],
     direction="vertical",
     gap=15,
 )

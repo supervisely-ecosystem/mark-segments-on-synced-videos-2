@@ -1,7 +1,18 @@
+import io
+import json
 import os
 import supervisely as sly
 
 import src.globals as g
+import src.ui.team_files as team_files
+
+NOTE_CONTENT = {
+    "0": "Technical file. Do not delete.",
+    "1": "_____________________________________________________________________________",
+    "2": "This directory contains all created segments of current dataset.",
+    "3": "All members of your team will have access to use segments from this directory."
+}
+
 
 app_path = os.path.join(g.DATA_DIR, "mark-segments-on-synced-videos-2-files")
 if "mark-segments-on-synced-videos-2-files" not in os.listdir(g.DATA_DIR):
@@ -23,6 +34,20 @@ if f"dataset-{g.dataset_info.id}" not in os.listdir(pr_path):
 else:
     sly.fs.remove_dir(ds_path)
     os.mkdir(ds_path)
+
+note_file_path = os.path.join(ds_path, "Info.json")
+
+if not g.api.file.exists(g.TEAM_ID, note_file_path):
+    with io.open(note_file_path, "w", encoding="utf-8") as f:
+        str_ = json.dumps(
+            NOTE_CONTENT, indent=4, separators=(",", ": "), ensure_ascii=False
+        )
+        f.write(str(str_))
+    file_info = g.api.file.upload(g.TEAM_ID, note_file_path, note_file_path)
+else:
+    file_info = g.api.file.get_info_by_path(g.TEAM_ID, note_file_path)
+
+team_files.segments_in_team_files.set(file_info)
 
 
 def clean_local_video_pair_dir(left_video_id: int, right_video_id: int):

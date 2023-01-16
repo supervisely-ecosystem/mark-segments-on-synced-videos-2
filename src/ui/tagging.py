@@ -119,9 +119,9 @@ def show_segments_ui():
 @mark_segment_btn.click
 def create_segment():
     table.loading = True
+
     try:
-        segment_id = g.api.project.get_info_by_id(g.project_id).custom_data["segment_id"]
-        g.api.project.update_custom_data(g.project_id, {"segment_id": int(segment_id) + 1})
+        segment_id = _get_new_segment_id()
 
         new_segment_file = os.path.join(select_videos.pairs_dir_name, f"segment-{segment_id}.json")
 
@@ -141,11 +141,12 @@ def create_segment():
             "tags": [],
         }
 
-        with io.open(new_segment_file, "w", encoding="utf-8") as f:
+        with io.open(new_segment_file, "w", encoding="utf-8") as file:
             str_ = json.dumps(
                 data, indent=4, sort_keys=True, separators=(",", ": "), ensure_ascii=False
             )
-            f.write(str(str_))
+            file.write(str(str_))
+
         g.api.file.upload(g.TEAM_ID, new_segment_file, new_segment_file)
         tags = sly.TagCollection()
         row = _create_row(segment_id, new_segment_file, left_timestamp, right_timestamp, tags)
@@ -258,7 +259,7 @@ def download_segments_info_as_csv():
                 clean_text = ", ".join(text)
 
             df.at[rowIndex, columnIndex] = clean_text
-            new_df = df.drop([COL_EDIT, COL_PREVIEW, COL_DELETE], axis='columns')
+            new_df = df.drop([COL_EDIT, COL_PREVIEW, COL_DELETE], axis="columns")
 
     return new_df
 
@@ -275,6 +276,15 @@ def mark_videos_as_done():
     _close_video_pair()
     select_videos.reselect_pair_btn.show()
     f.clean_local_video_pair_dir(left_id, right_id)
+
+
+def _get_new_segment_id():
+    new_segment_id = g.api.project.get_info_by_id(g.project_id).custom_data["segment_id"]
+    new_segment_file = os.path.join(select_videos.pairs_dir_name, f"segment-{new_segment_id}.json")
+    g.api.project.update_custom_data(g.project_id, {"segment_id": int(new_segment_id) + 1})
+    if not g.api.file.exists(g.TEAM_ID, new_segment_file):
+        return new_segment_id
+    return _get_new_segment_id()
 
 
 def _show_segments():
