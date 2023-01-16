@@ -119,9 +119,19 @@ def show_segments_ui():
 @mark_segment_btn.click
 def create_segment():
     table.loading = True
+
     try:
-        segment_id = g.api.project.get_info_by_id(g.project_id).custom_data["segment_id"]
-        g.api.project.update_custom_data(g.project_id, {"segment_id": int(segment_id) + 1})
+        custom_data = g.api.project.get_info_by_id(g.project_id).custom_data
+        unchecked_segment_id = None
+        if "segment_id" in custom_data.keys():
+            unchecked_segment_id = int(custom_data["segment_id"])
+
+        segment_id = _check_new_segment_id(unchecked_segment_id)
+        if segment_id is None:
+            raise DialogWindowError(
+                "Incorrect segment id",
+                "Segment_id is None. Check that number 'segment_id' exists in project custom_data.",
+            )
 
         new_segment_file = os.path.join(select_videos.pairs_dir_name, f"segment-{segment_id}.json")
 
@@ -141,12 +151,13 @@ def create_segment():
             "tags": [],
         }
 
-        with io.open(new_segment_file, "w", encoding="utf-8") as f:
+        with io.open(new_segment_file, "w", encoding="utf-8") as file:
             str_ = json.dumps(
                 data, indent=4, sort_keys=True, separators=(",", ": "), ensure_ascii=False
             )
-            f.write(str(str_))
-        g.api.file.upload(g.TEAM_ID, new_segment_file, new_segment_file)
+            file.write(str(str_))
+
+        g.api.file.upload(g.team_id, new_segment_file, new_segment_file)
         tags = sly.TagCollection()
         row = _create_row(segment_id, new_segment_file, left_timestamp, right_timestamp, tags)
         table.insert_row(row)
@@ -212,7 +223,7 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
             segment_filepath = os.path.join(
                 select_videos.pairs_dir_name, f"segment-{segment_id}.json"
             )
-            g.api.file.remove(g.TEAM_ID, segment_filepath)
+            g.api.file.remove(g.team_id, segment_filepath)
             os.remove(segment_filepath)
 
             table.delete_row(COL_ID, segment_id)
@@ -238,7 +249,7 @@ def download_segments_info_as_csv():
     right_id = g.choosed_videos["right_video"].id
     pairs_dir_name = os.path.join(f.ds_path, f"video-pair-{left_id}-{right_id}")
 
-    if len(g.api.file.listdir(g.TEAM_ID, pairs_dir_name)) == 0:
+    if len(g.api.file.listdir(g.team_id, pairs_dir_name)) == 0:
         empty_df = pd.DataFrame()
         return empty_df
 
@@ -258,7 +269,7 @@ def download_segments_info_as_csv():
                 clean_text = ", ".join(text)
 
             df.at[rowIndex, columnIndex] = clean_text
-            new_df = df.drop([COL_EDIT, COL_PREVIEW, COL_DELETE], axis='columns')
+            new_df = df.drop([COL_EDIT, COL_PREVIEW, COL_DELETE], axis="columns")
 
     return new_df
 
@@ -277,6 +288,25 @@ def mark_videos_as_done():
     f.clean_local_video_pair_dir(left_id, right_id)
 
 
+def _check_new_segment_id(id):
+    if id is None:
+        return None
+
+    if not _check_if_segment_id_exists(id):
+        g.api.project.update_custom_data(g.project_id, {"segment_id": id + 1})
+        return id
+    return _check_new_segment_id(id + 1)
+
+
+def _check_if_segment_id_exists(id):
+    all_segments = []
+    ds_files = g.api.file.list2(g.team_id, f.ds_path)
+    if len(ds_files) > 0:
+        for file in ds_files:
+            all_segments.append(file.name)
+    return f"segment-{id}.json" in all_segments
+
+
 def _show_segments():
     left_video_id = g.choosed_videos["left_video"].id
     right_video_id = g.choosed_videos["right_video"].id
@@ -284,8 +314,8 @@ def _show_segments():
 
     if f"video-pair-{left_video_id}-{right_video_id}" in os.listdir(f.ds_path):
         sly.fs.remove_dir(pairs_dir_name)
-    if g.api.file.dir_exists(g.TEAM_ID, pairs_dir_name):
-        g.api.file.download_directory(g.TEAM_ID, pairs_dir_name, pairs_dir_name)
+    if g.api.file.dir_exists(g.team_id, pairs_dir_name):
+        g.api.file.download_directory(g.team_id, pairs_dir_name, pairs_dir_name)
     if not sly.fs.dir_exists(pairs_dir_name):
         sly.fs.mkdir(pairs_dir_name)
 
@@ -350,7 +380,7 @@ def _create_row(
 ):
     attrs_str = None
 
-    file_info = g.api.file.get_info_by_path(g.TEAM_ID, file_path)
+    file_info = g.api.file.get_info_by_path(g.team_id, file_path)
     if file_info is not None:
         created_at = _get_readable_datetime(file_info.created_at)
 
@@ -364,7 +394,7 @@ def _create_row(
 
     row = [
         segment_id,
-        g.USER_INFO.login if g.USER_INFO is not None else None,
+        g.user_info.login if g.user_info is not None else None,
         created_at if file_info is not None else None,
         begin_timestamp if left_timestamp is not None else None,
         end_timestamp if right_timestamp is not None else None,
