@@ -121,7 +121,17 @@ def create_segment():
     table.loading = True
 
     try:
-        segment_id = _get_new_segment_id()
+        custom_data = g.api.project.get_info_by_id(g.project_id).custom_data
+        unchecked_segment_id = None
+        if "segment_id" in custom_data.keys():
+            unchecked_segment_id = int(custom_data["segment_id"])
+
+        segment_id = _check_new_segment_id(unchecked_segment_id)
+        if segment_id is None:
+            raise DialogWindowError(
+                "Incorrect segment id",
+                "Segment_id is None. Check that number 'segment_id' exists in project custom_data.",
+            ) 
 
         new_segment_file = os.path.join(select_videos.pairs_dir_name, f"segment-{segment_id}.json")
 
@@ -278,13 +288,23 @@ def mark_videos_as_done():
     f.clean_local_video_pair_dir(left_id, right_id)
 
 
-def _get_new_segment_id():
-    new_segment_id = g.api.project.get_info_by_id(g.project_id).custom_data["segment_id"]
-    new_segment_file = os.path.join(select_videos.pairs_dir_name, f"segment-{new_segment_id}.json")
-    g.api.project.update_custom_data(g.project_id, {"segment_id": int(new_segment_id) + 1})
-    if not g.api.file.exists(g.TEAM_ID, new_segment_file):
-        return new_segment_id
-    return _get_new_segment_id()
+def _check_new_segment_id(id):
+    if id is None:
+        return None
+
+    if not _check_if_segment_id_exists(id):
+        g.api.project.update_custom_data(g.project_id, {"segment_id": id + 1})
+        return id
+    return _check_new_segment_id(id + 1)
+
+
+def _check_if_segment_id_exists(id):
+    all_segments = []
+    ds_files = g.api.file.list2(g.TEAM_ID, f.ds_path)
+    if len(ds_files) > 0:
+        for file in ds_files:
+            all_segments.append(file.name)
+    return f"segment-{id}.json" in all_segments
 
 
 def _show_segments():
