@@ -67,8 +67,8 @@ def set_tags():
             )
             f.write(str(str_))
 
-        g.api.file.remove(g.TEAM_ID, segment_filepath)
-        g.api.file.upload(g.TEAM_ID, segment_filepath, segment_filepath)
+        g.api.file.remove(g.team_id, segment_filepath)
+        g.api.file.upload(g.team_id, segment_filepath, segment_filepath)
         attrs_str = display_attributes(updated_tags)
         t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_ATTRIBUTES, attrs_str)
 
@@ -102,8 +102,8 @@ def show_attrs_card(segment_id):
     filtered_project_metas = list(
         filter(lambda x: x["name"] != g.technical_tag_name, project_metas_json)
     )
-    if g.api.file.exists(g.TEAM_ID, segment_filepath):
-        g.api.file.download(g.TEAM_ID, segment_filepath, segment_filepath)
+    if g.api.file.exists(g.team_id, segment_filepath):
+        g.api.file.download(g.team_id, segment_filepath, segment_filepath)
         with io.open(segment_filepath) as f:
             tags_to_delete = []
             data = json.load(f)
@@ -121,7 +121,7 @@ def show_attrs_card(segment_id):
             if len(tags_to_delete) > 0:
                 attrs_str = display_attributes(tags, t_error_msg)
                 t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_ATTRIBUTES, attrs_str)
-            
+
             for i, tm in enumerate(filtered_project_metas):
                 tag_inputs[i].deactivate()
                 if tag_inputs[i].get_tag_meta().value_type == str(TagValueType.ANY_NUMBER):

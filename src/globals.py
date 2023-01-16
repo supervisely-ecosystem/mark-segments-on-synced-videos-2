@@ -5,10 +5,10 @@ import supervisely.io.env as env
 
 api = sly.Api()
 
-TEAM_ID = env.team_id()
-USER_INFO = api.user.get_my_info()
-DATA_DIR = sly.app.get_data_dir()
-sly.fs.clean_dir(DATA_DIR)
+team_id = env.team_id()
+user_info = api.user.get_my_info()
+data_dir = sly.app.get_data_dir()
+sly.fs.clean_dir(data_dir)
 
 dataset_id = int(os.environ["context.datasetId"])
 dataset_info = api.dataset.get_info_by_id(dataset_id, raise_error=True)

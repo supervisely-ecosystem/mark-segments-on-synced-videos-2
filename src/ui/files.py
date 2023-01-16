@@ -7,15 +7,17 @@ import src.globals as g
 import src.ui.team_files as team_files
 
 NOTE_CONTENT = {
-    "0": "Technical file. Do not delete.",
-    "1": "_____________________________________________________________________________",
-    "2": "This directory contains all created segments of current dataset.",
-    "3": "All members of your team will have access to use segments from this directory."
+    "team_id": g.team_id,
+    "project_id": g.project_id,
+    "project_name": g.project_info.name,
+    "dataset_id": g.dataset_id,
+    "dataset_name": g.dataset_info.name,
+    "videos_count": g.dataset_info.items_count,
 }
 
 
-app_path = os.path.join(g.DATA_DIR, "mark-segments-on-synced-videos-2-files")
-if "mark-segments-on-synced-videos-2-files" not in os.listdir(g.DATA_DIR):
+app_path = os.path.join(g.data_dir, "mark-segments-on-synced-videos-2-files")
+if "mark-segments-on-synced-videos-2-files" not in os.listdir(g.data_dir):
     os.mkdir(app_path)
 else:
     sly.fs.remove_dir(app_path)
@@ -37,15 +39,13 @@ else:
 
 note_file_path = os.path.join(ds_path, "Info.json")
 
-if not g.api.file.exists(g.TEAM_ID, note_file_path):
+if not g.api.file.exists(g.team_id, note_file_path):
     with io.open(note_file_path, "w", encoding="utf-8") as f:
-        str_ = json.dumps(
-            NOTE_CONTENT, indent=4, separators=(",", ": "), ensure_ascii=False
-        )
+        str_ = json.dumps(NOTE_CONTENT, indent=4, separators=(",", ": "), ensure_ascii=False)
         f.write(str(str_))
-    file_info = g.api.file.upload(g.TEAM_ID, note_file_path, note_file_path)
+    file_info = g.api.file.upload(g.team_id, note_file_path, note_file_path)
 else:
-    file_info = g.api.file.get_info_by_path(g.TEAM_ID, note_file_path)
+    file_info = g.api.file.get_info_by_path(g.team_id, note_file_path)
 
 team_files.segments_in_team_files.set(file_info)
 
