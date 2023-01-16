@@ -7,6 +7,8 @@ import src.globals as g
 import src.ui.team_files as team_files
 
 NOTE_CONTENT = {
+    "app_name": "Mark attributed segments on multi-camera videos",
+    "path_in_team_files": "",
     "team_id": g.team_id,
     "project_id": g.project_id,
     "project_name": g.project_info.name,
@@ -31,6 +33,7 @@ else:
     os.mkdir(pr_path)
 
 ds_path = os.path.join(pr_path, f"dataset-{g.dataset_info.id}")
+NOTE_CONTENT["path_in_team_files"] = ds_path
 if f"dataset-{g.dataset_info.id}" not in os.listdir(pr_path):
     os.mkdir(ds_path)
 else:
