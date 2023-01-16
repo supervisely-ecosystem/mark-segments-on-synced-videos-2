@@ -42,16 +42,19 @@ else:
 
 note_file_path = os.path.join(ds_path, "Info.json")
 
-if not g.api.file.exists(g.team_id, note_file_path):
-    with io.open(note_file_path, "w", encoding="utf-8") as f:
-        str_ = json.dumps(NOTE_CONTENT, indent=4, separators=(",", ": "), ensure_ascii=False)
-        f.write(str(str_))
+with io.open(note_file_path, "w", encoding="utf-8") as f:
+    str_ = json.dumps(NOTE_CONTENT, indent=4, separators=(",", ": "), ensure_ascii=False)
+    f.write(str(str_))
+try:
+    file_info = None
+    if g.api.file.exists(g.team_id, note_file_path):
+        g.api.file.remove(g.team_id, note_file_path)
     file_info = g.api.file.upload(g.team_id, note_file_path, note_file_path)
-else:
-    file_info = g.api.file.get_info_by_path(g.team_id, note_file_path)
-
-team_files.segments_in_team_files.set(file_info)
-
+except:
+    pass
+finally:
+    if file_info is not None:
+        team_files.segments_in_team_files.set(file_info)
 
 def clean_local_video_pair_dir(left_video_id: int, right_video_id: int):
     pairs_dir_name = os.path.join(ds_path, f"video-pair-{left_video_id}-{right_video_id}")
