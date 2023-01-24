@@ -84,12 +84,14 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
         left_video.player.set_video(url=video_url, mime_type=video_type)
         left_video.preview.set_video_id(video_id)
         left_video.preview.show()
+        left_video.navigation_field.show()
         left_video.card.unlock()
     elif datapoint.button_name == COL_SET_RIGHT:
         g.choosed_videos["right_video"] = video_info
         right_video.player.set_video(url=video_url, mime_type=video_type)
         right_video.preview.set_video_id(video_id)
         right_video.preview.show()
+        right_video.navigation_field.show()
         right_video.sync_btn.show()
         right_video.card.unlock()
 
