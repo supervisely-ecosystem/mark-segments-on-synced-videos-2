@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 import supervisely as sly
-from supervisely.app.widgets import Button, Card, Container, Flexbox, InputTag
+from supervisely.app.widgets import Button, Card, Container, Flexbox, InputTag, Text
 from supervisely.annotation.tag_meta import TagValueType
 
 import src.globals as g
@@ -16,7 +16,7 @@ data = None
 current_segment_id = None
 t_error_msg = "Tags loading error. See logs."
 
-
+segment_id_text = Text(text="", status="info")
 tag_inputs = [InputTag(t) for t in g.project_meta.tag_metas if t.name != g.technical_tag_name]
 tag_input_boxes = [Flexbox(widgets=[widget]) for widget in tag_inputs]
 save_button = Button(text="Save tags")
@@ -26,7 +26,7 @@ tags_container = Container(widgets=tag_input_boxes)
 card = Card(
     "4️⃣  Attributes to segment",
     "Select attributes to mark current segment",
-    content=Container(widgets=[tags_container, save_button], direction="vertical"),
+    content=Container(widgets=[segment_id_text, tags_container, save_button], direction="vertical"),
     lock_message='Select segment in table by clicking 👆 "EDIT" button on step 4️⃣',
 )
 card.hide()

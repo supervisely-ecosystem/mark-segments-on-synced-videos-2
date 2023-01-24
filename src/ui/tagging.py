@@ -239,6 +239,7 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
         close_pair_btn.hide()
         start_tagging_btn.hide()
         segment_id = datapoint.row[COL_ID]
+        attrs.segment_id_text.text = f"Current segment ID: <b>{segment_id}</b>"
         attrs.show_attrs_card(segment_id)
     table.clear_selection()
 
