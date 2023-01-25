@@ -30,6 +30,10 @@ It can work in two modes:
 
 App assigns to segments identifiers, attributes (tags), timestamps (for left and right videos) and saves in team files as a json file.
 
+**Updates:**
+-  `v1.0.10` - added new info widget that shows where segments are stored in Team Files for selected video pair.
+-  `v1.0.11` -  added video control buttons for easy video navigation.
+
 # How to use
 
 0. **Add project tags to the project.** You can create all type of project tags: `none`, `any string`, `any number` and `one of string`. All created tags can be used in the app to add segment attributes (except technical tag `status-segments-on-synced-videos`).
