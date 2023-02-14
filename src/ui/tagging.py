@@ -396,7 +396,7 @@ def _create_row(
 
     row = [
         segment_id,
-        user.name if user is not None else None,
+        user.login if user is not None else None,
         created_at if file_info is not None else None,
         begin_timestamp if left_timestamp is not None else None,
         end_timestamp if right_timestamp is not None else None,
