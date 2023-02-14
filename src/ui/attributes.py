@@ -60,7 +60,10 @@ def set_tags():
                 tag = sly.Tag(tm, tag_value)
                 updated_tags = updated_tags.add(tag)
 
+        updated_at = datetime.datetime.now().strftime("%d %B %Y  %H:%M:%S")
+
         data["tags"] = updated_tags.to_json()
+        data.update({"updated_at": updated_at})
 
         with io.open(segment_filepath, "w", encoding="utf-8") as f:
             str_ = json.dumps(
@@ -71,7 +74,6 @@ def set_tags():
         g.api.file.remove(g.team_id, segment_filepath)
         g.api.file.upload(g.team_id, segment_filepath, segment_filepath)
         attrs_str = display_attributes(updated_tags)
-        updated_at = datetime.datetime.now().strftime("%d %B %Y  %H:%M:%S")
 
         t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_ATTRIBUTES, attrs_str)
         t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_USER, g.user_info.id)
