@@ -160,7 +160,7 @@ def create_segment():
         g.api.file.upload(g.team_id, new_segment_file, new_segment_file)
         tags = sly.TagCollection()
         row = _create_row(segment_id, new_segment_file, left_timestamp, right_timestamp, tags)
-        table.insert_row(data=row, index=0)
+        table.insert_row(data=row)
 
     except Exception as e:
         raise e
