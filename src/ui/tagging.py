@@ -42,7 +42,7 @@ help_text = Text(
 help_block = Flexbox([help_text], center_content=True)
 
 COL_ID = "Segment ID".upper()
-COL_USER = "User login".upper()
+COL_USER = "User ID".upper()
 COL_CREATED_AT = "Created at".upper()
 COL_BEGIN = "Begin (left)".upper()
 COL_END = "End (right)".upper()
@@ -149,6 +149,8 @@ def create_segment():
                 "timestamp": right_timestamp,
             },
             "tags": [],
+            "created_at": datetime.now().strftime("%d %B %Y  %H:%M:%S"),
+            "updated_at": ""
         }
 
         with io.open(new_segment_file, "w", encoding="utf-8") as file:
@@ -384,7 +386,6 @@ def _create_row(
     file_info = g.api.file.get_info_by_path(g.team_id, file_path)
     if file_info is not None:
         created_at = _get_readable_datetime(file_info.created_at)
-        user = g.api.user.get_info_by_id(file_info.user_id)
 
     if left_timestamp is not None:
         begin_timestamp = _get_readable_timestamp(left_timestamp)
@@ -396,7 +397,7 @@ def _create_row(
 
     row = [
         segment_id,
-        user.login if user is not None else None,
+        file_info.user_id if file_info is not None else None,
         created_at if file_info is not None else None,
         begin_timestamp if left_timestamp is not None else None,
         end_timestamp if right_timestamp is not None else None,
