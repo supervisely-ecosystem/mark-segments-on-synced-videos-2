@@ -44,6 +44,7 @@ help_block = Flexbox([help_text], center_content=True)
 COL_ID = "Segment ID".upper()
 COL_USER = "User login".upper()
 COL_CREATED_AT = "Created at".upper()
+COL_CREATED_AT_SORT = "Sort date".upper()
 COL_BEGIN = "Begin (left)".upper()
 COL_END = "End (right)".upper()
 COL_ATTRIBUTES = "Attributes".upper()
@@ -160,7 +161,7 @@ def create_segment():
         g.api.file.upload(g.team_id, new_segment_file, new_segment_file)
         tags = sly.TagCollection()
         row = _create_row(segment_id, new_segment_file, left_timestamp, right_timestamp, tags)
-        table.insert_row(row)
+        table.insert_row(data=row, index=0)
 
     except Exception as e:
         raise e
@@ -368,7 +369,10 @@ def _build_df(pairs_dir_name):
                     )
                 )
     df = pd.DataFrame(lines, columns=columns)
-    table.read_pandas(df)
+    df[COL_CREATED_AT_SORT] = pd.to_datetime(df[COL_CREATED_AT])
+    df.sort_values(by=COL_CREATED_AT, inplace=True, ascending=False)
+    new_df = df.drop([COL_CREATED_AT_SORT], axis="columns")
+    table.read_pandas(new_df)
 
 
 def _create_row(
@@ -384,6 +388,7 @@ def _create_row(
     file_info = g.api.file.get_info_by_path(g.team_id, file_path)
     if file_info is not None:
         created_at = _get_readable_datetime(file_info.created_at)
+        user = g.api.user.get_info_by_id(file_info.user_id)
 
     if left_timestamp is not None:
         begin_timestamp = _get_readable_timestamp(left_timestamp)
@@ -395,7 +400,7 @@ def _create_row(
 
     row = [
         segment_id,
-        g.user_info.login if g.user_info is not None else None,
+        user.name if file_info is not None else None,
         created_at if file_info is not None else None,
         begin_timestamp if left_timestamp is not None else None,
         end_timestamp if right_timestamp is not None else None,
