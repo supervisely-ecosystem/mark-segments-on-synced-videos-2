@@ -44,7 +44,6 @@ help_block = Flexbox([help_text], center_content=True)
 COL_ID = "Segment ID".upper()
 COL_USER = "User login".upper()
 COL_CREATED_AT = "Created at".upper()
-COL_CREATED_AT_SORT = "Sort date".upper()
 COL_BEGIN = "Begin (left)".upper()
 COL_END = "End (right)".upper()
 COL_ATTRIBUTES = "Attributes".upper()
@@ -58,7 +57,6 @@ columns = [
     COL_ID,
     COL_USER,
     COL_CREATED_AT,
-    COL_CREATED_AT_SORT,
     COL_BEGIN,
     COL_END,
     COL_ATTRIBUTES,
@@ -370,10 +368,7 @@ def _build_df(pairs_dir_name):
                     )
                 )
     df = pd.DataFrame(lines, columns=columns)
-    df[COL_CREATED_AT_SORT] = pd.to_datetime(df[COL_CREATED_AT])
-    df.sort_values(by=COL_CREATED_AT, inplace=True, ascending=False)
-    new_df = df.drop([COL_CREATED_AT_SORT], axis="columns")
-    table.read_pandas(new_df)
+    table.read_pandas(df)
 
 
 def _create_row(
@@ -401,9 +396,8 @@ def _create_row(
 
     row = [
         segment_id,
-        user.name if file_info is not None else None,
+        user.name if user is not None else None,
         created_at if file_info is not None else None,
-        pd.to_datetime(created_at) if file_info is not None else None,
         begin_timestamp if left_timestamp is not None else None,
         end_timestamp if right_timestamp is not None else None,
         attrs_str if attrs_str is not None else None,
