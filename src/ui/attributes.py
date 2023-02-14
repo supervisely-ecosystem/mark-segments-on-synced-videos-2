@@ -1,3 +1,4 @@
+import datetime
 import io
 import json
 import os
@@ -120,7 +121,9 @@ def show_attrs_card(segment_id):
             tags = sly.TagCollection.from_json(data["tags"], g.project_meta.tag_metas)
             if len(tags_to_delete) > 0:
                 attrs_str = display_attributes(tags, t_error_msg)
+                updated_at = datetime.datetime.now().strftime("%d %B %Y  %H:%M:%S")
                 t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_ATTRIBUTES, attrs_str)
+                t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_UPDATED_AT, updated_at)
 
             for i, tm in enumerate(filtered_project_metas):
                 tag_inputs[i].deactivate()

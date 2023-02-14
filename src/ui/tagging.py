@@ -43,7 +43,7 @@ help_block = Flexbox([help_text], center_content=True)
 
 COL_ID = "Segment ID".upper()
 COL_USER = "User ID".upper()
-COL_UPDATED_AT = "Created at".upper()
+COL_UPDATED_AT = "Updated at".upper()
 COL_BEGIN = "Begin (left)".upper()
 COL_END = "End (right)".upper()
 COL_ATTRIBUTES = "Attributes".upper()
