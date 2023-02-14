@@ -58,6 +58,7 @@ columns = [
     COL_ID,
     COL_USER,
     COL_CREATED_AT,
+    COL_CREATED_AT_SORT,
     COL_BEGIN,
     COL_END,
     COL_ATTRIBUTES,
