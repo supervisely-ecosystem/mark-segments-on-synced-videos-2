@@ -71,7 +71,11 @@ def set_tags():
         g.api.file.remove(g.team_id, segment_filepath)
         g.api.file.upload(g.team_id, segment_filepath, segment_filepath)
         attrs_str = display_attributes(updated_tags)
+        updated_at = datetime.datetime.now().strftime("%d %B %Y  %H:%M:%S")
+
         t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_ATTRIBUTES, attrs_str)
+        t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_USER, g.user_info.id)
+        t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_UPDATED_AT, updated_at)
 
     except Exception as e:
         raise sly.logger.error(e, stack_info=False)
@@ -121,9 +125,7 @@ def show_attrs_card(segment_id):
             tags = sly.TagCollection.from_json(data["tags"], g.project_meta.tag_metas)
             if len(tags_to_delete) > 0:
                 attrs_str = display_attributes(tags, t_error_msg)
-                updated_at = datetime.datetime.now().strftime("%d %B %Y  %H:%M:%S")
                 t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_ATTRIBUTES, attrs_str)
-                t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_UPDATED_AT, updated_at)
 
             for i, tm in enumerate(filtered_project_metas):
                 tag_inputs[i].deactivate()
