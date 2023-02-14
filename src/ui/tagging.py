@@ -403,6 +403,7 @@ def _create_row(
         segment_id,
         user.name if file_info is not None else None,
         created_at if file_info is not None else None,
+        pd.to_datetime(created_at) if file_info is not None else None,
         begin_timestamp if left_timestamp is not None else None,
         end_timestamp if right_timestamp is not None else None,
         attrs_str if attrs_str is not None else None,
