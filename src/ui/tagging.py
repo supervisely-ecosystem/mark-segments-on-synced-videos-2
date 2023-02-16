@@ -379,6 +379,7 @@ def _build_df(pairs_dir_name):
                 )
     df = pd.DataFrame(lines, columns=columns)
     table.read_pandas(df)
+    table.sort(column_id=2, direction="desc")
 
 
 def _create_row(

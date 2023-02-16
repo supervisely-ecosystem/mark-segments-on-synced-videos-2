@@ -1,1 +1,1 @@
-supervisely==6.69.13
+git+https://github.com/supervisely/supervisely.git@table-custom-sort
