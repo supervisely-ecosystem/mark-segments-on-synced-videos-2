@@ -142,6 +142,7 @@ def create_segment():
             "right": right_timestamp,
         }
         updated_at = datetime.datetime.now().strftime("%d %B %Y  %H:%M:%S")
+        user_name = g.user_info.login
 
         data = {
             "left_video": {
@@ -156,6 +157,7 @@ def create_segment():
             },
             "tags": [],
             "updated_at": updated_at,
+            "user_name": user_name,
         }
 
         with io.open(new_segment_file, "w", encoding="utf-8") as file:
@@ -166,7 +168,7 @@ def create_segment():
 
         g.api.file.upload(g.team_id, new_segment_file, new_segment_file)
         tags = sly.TagCollection()
-        row = _create_row(segment_id, new_segment_file, timestamps, updated_at, tags)
+        row = _create_row(segment_id, new_segment_file, timestamps, user_name, updated_at, tags)
         table.insert_row(data=row)
 
     except Exception as e:
@@ -361,6 +363,10 @@ def _build_df(pairs_dir_name):
                 updated_at = None
                 if "updated_at" in d.keys():
                     updated_at = d["updated_at"]
+                user_name = None
+                if "user_name" in d.keys():
+                    user_name = d["user_name"]
+
                 for tag in d["tags"]:
                     tag_meta = g.project_meta.get_tag_meta(tag["name"])
                     if tag_meta is None:
@@ -375,7 +381,9 @@ def _build_df(pairs_dir_name):
                 tags = sly.TagCollection.from_json(d["tags"], g.project_meta.tag_metas)
 
                 lines.append(
-                    _create_row(segment_id, file_path, timestamps, updated_at, tags, t_error)
+                    _create_row(
+                        segment_id, file_path, timestamps, user_name, updated_at, tags, t_error
+                    )
                 )
     df = pd.DataFrame(lines, columns=columns)
     table.read_pandas(df)
@@ -386,6 +394,7 @@ def _create_row(
     segment_id: str,
     file_path,
     timestamps,
+    user_name,
     updated_at,
     tags: sly.TagCollection,
     t_error=None,
@@ -398,6 +407,9 @@ def _create_row(
     if updated_at is None and file_info is not None:
         updated_at = _get_readable_datetime(file_info.created_at)
 
+    if user_name is None and file_info.user_id == g.user_info.id:
+        user_name = g.user_info.login
+
     if left_timestamp is not None:
         begin_timestamp = _get_readable_timestamp(left_timestamp)
 
@@ -408,7 +420,7 @@ def _create_row(
 
     row = [
         segment_id,
-        file_info.user_id if file_info is not None else None,
+        user_name if user_name is not None else file_info.user_id,
         updated_at,
         begin_timestamp if left_timestamp is not None else None,
         end_timestamp if right_timestamp is not None else None,

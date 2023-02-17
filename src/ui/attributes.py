@@ -61,9 +61,11 @@ def set_tags():
                 updated_tags = updated_tags.add(tag)
 
         updated_at = datetime.datetime.now().strftime("%d %B %Y  %H:%M:%S")
+        user_name = g.user_info.login
 
         data["tags"] = updated_tags.to_json()
         data.update({"updated_at": updated_at})
+        data.update({"user_name": user_name})
 
         with io.open(segment_filepath, "w", encoding="utf-8") as f:
             str_ = json.dumps(
@@ -76,7 +78,7 @@ def set_tags():
         attrs_str = display_attributes(updated_tags)
 
         t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_ATTRIBUTES, attrs_str)
-        t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_USER, g.user_info.id)
+        t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_USER, user_name)
         t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_UPDATED_AT, updated_at)
 
     except Exception as e:
