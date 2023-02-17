@@ -335,6 +335,7 @@ def _show_segments():
     if left_video_id != right_video_id:
         select_videos.set_video_status(right_video_id, right_tags, STATUS_IN_PROGRESS)
     select_videos.table.clear_selection()
+    select_videos.extra_table.clear_selection()
 
     _build_df(pairs_dir_name)
 
