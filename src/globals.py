@@ -10,17 +10,21 @@ user_info = api.user.get_my_info()
 data_dir = sly.app.get_data_dir()
 sly.fs.clean_dir(data_dir)
 
-dataset_id = int(os.environ["context.datasetId"])
-dataset_info = api.dataset.get_info_by_id(dataset_id, raise_error=True)
-project_id = dataset_info.project_id
+project_id = int(os.environ["context.projectId"])
 project_info = api.project.get_info_by_id(project_id)
+
+dataset_id = None
+dataset_info = None
+extra_dataset_id = None
+extra_dataset_info = None
+
 project_meta = None
 status_tag = None
 technical_tag_name = "status-segments-on-synced-videos"
 
 choosed_videos = {
-    "left_player": None,
-    "right_player": None,
+    "left_video": None,
+    "right_video": None,
 }
 
 MISSED_ENTRY = "Missed entry"

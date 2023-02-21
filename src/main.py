@@ -36,7 +36,5 @@ layout = Container(
     gap=15,
 )
 
-select_videos.build_table()
-
 
 app = sly.Application(layout=layout)

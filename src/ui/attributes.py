@@ -1,3 +1,4 @@
+import datetime
 import io
 import json
 import os
@@ -59,18 +60,26 @@ def set_tags():
                 tag = sly.Tag(tm, tag_value)
                 updated_tags = updated_tags.add(tag)
 
+        updated_at = datetime.datetime.now().strftime("%d %B %Y  %H:%M:%S")
+        user_name = g.user_info.login
+
         data["tags"] = updated_tags.to_json()
+        data.update({"updated_at": updated_at})
+        data.update({"user_name": user_name})
 
         with io.open(segment_filepath, "w", encoding="utf-8") as f:
             str_ = json.dumps(
-                data, indent=4, sort_keys=True, separators=(",", ": "), ensure_ascii=False
+                data, indent=4, separators=(",", ": "), ensure_ascii=False
             )
             f.write(str(str_))
 
         g.api.file.remove(g.team_id, segment_filepath)
         g.api.file.upload(g.team_id, segment_filepath, segment_filepath)
         attrs_str = display_attributes(updated_tags)
+
         t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_ATTRIBUTES, attrs_str)
+        t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_USER, user_name)
+        t.table.update_cell_value(t.COL_ID, current_segment_id, t.COL_UPDATED_AT, updated_at)
 
     except Exception as e:
         raise sly.logger.error(e, stack_info=False)

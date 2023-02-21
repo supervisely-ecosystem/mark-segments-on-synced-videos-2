@@ -42,8 +42,8 @@ help_text = Text(
 help_block = Flexbox([help_text], center_content=True)
 
 COL_ID = "Segment ID".upper()
-COL_USER = "User login".upper()
-COL_CREATED_AT = "Created at".upper()
+COL_USER = "User".upper()
+COL_UPDATED_AT = "Updated at".upper()
 COL_BEGIN = "Begin (left)".upper()
 COL_END = "End (right)".upper()
 COL_ATTRIBUTES = "Attributes".upper()
@@ -56,7 +56,7 @@ EDIT_BTN = f"EDIT <i class='zmdi zmdi-edit'>"
 columns = [
     COL_ID,
     COL_USER,
-    COL_CREATED_AT,
+    COL_UPDATED_AT,
     COL_BEGIN,
     COL_END,
     COL_ATTRIBUTES,
@@ -137,6 +137,14 @@ def create_segment():
 
         left_timestamp = left_video.player.get_current_timestamp()
         right_timestamp = right_video.player.get_current_timestamp()
+        timestamps = {
+            "left": left_timestamp,
+            "right": right_timestamp,
+        }
+        updated_at = datetime.datetime.now().strftime("%d %B %Y  %H:%M:%S")
+        created_at = datetime.datetime.now().strftime("%d %B %Y  %H:%M:%S")
+        user_name = g.user_info.login
+
         data = {
             "left_video": {
                 "id": g.choosed_videos["left_video"].id,
@@ -149,18 +157,21 @@ def create_segment():
                 "timestamp": right_timestamp,
             },
             "tags": [],
+            "created_at": created_at,
+            "updated_at": updated_at,
+            "user_name": user_name,
         }
 
         with io.open(new_segment_file, "w", encoding="utf-8") as file:
             str_ = json.dumps(
-                data, indent=4, sort_keys=True, separators=(",", ": "), ensure_ascii=False
+                data, indent=4, separators=(",", ": "), ensure_ascii=False
             )
             file.write(str(str_))
 
         g.api.file.upload(g.team_id, new_segment_file, new_segment_file)
         tags = sly.TagCollection()
-        row = _create_row(segment_id, new_segment_file, left_timestamp, right_timestamp, tags)
-        table.insert_row(row)
+        row = _create_row(segment_id, new_segment_file, timestamps, user_name, updated_at, tags)
+        table.insert_row(data=row)
 
     except Exception as e:
         raise e
@@ -326,6 +337,7 @@ def _show_segments():
     if left_video_id != right_video_id:
         select_videos.set_video_status(right_video_id, right_tags, STATUS_IN_PROGRESS)
     select_videos.table.clear_selection()
+    select_videos.extra_table.clear_selection()
 
     _build_df(pairs_dir_name)
 
@@ -347,8 +359,17 @@ def _build_df(pairs_dir_name):
             with io.open(file_path) as j:
                 d = json.load(j)
                 segment_id = file_name.split("-")[-1]
-                left_timestamp = d["left_video"]["timestamp"]
-                right_timestamp = d["right_video"]["timestamp"]
+                timestamps = {
+                    "left": d["left_video"]["timestamp"],
+                    "right": d["right_video"]["timestamp"],
+                }
+                updated_at = None
+                if "updated_at" in d.keys():
+                    updated_at = d["updated_at"]
+                user_name = None
+                if "user_name" in d.keys():
+                    user_name = d["user_name"]
+
                 for tag in d["tags"]:
                     tag_meta = g.project_meta.get_tag_meta(tag["name"])
                     if tag_meta is None:
@@ -364,26 +385,33 @@ def _build_df(pairs_dir_name):
 
                 lines.append(
                     _create_row(
-                        segment_id, file_path, left_timestamp, right_timestamp, tags, t_error
+                        segment_id, file_path, timestamps, user_name, updated_at, tags, t_error
                     )
                 )
     df = pd.DataFrame(lines, columns=columns)
     table.read_pandas(df)
+    table.sort(column_id=2, direction="desc")
 
 
 def _create_row(
     segment_id: str,
     file_path,
-    left_timestamp,
-    right_timestamp,
+    timestamps,
+    user_name,
+    updated_at,
     tags: sly.TagCollection,
     t_error=None,
 ):
     attrs_str = None
+    left_timestamp = timestamps["left"]
+    right_timestamp = timestamps["right"]
 
     file_info = g.api.file.get_info_by_path(g.team_id, file_path)
-    if file_info is not None:
-        created_at = _get_readable_datetime(file_info.created_at)
+    if updated_at is None and file_info is not None:
+        updated_at = _get_readable_datetime(file_info.created_at)
+
+    if user_name is None and file_info.user_id == g.user_info.id:
+        user_name = g.user_info.login
 
     if left_timestamp is not None:
         begin_timestamp = _get_readable_timestamp(left_timestamp)
@@ -395,8 +423,8 @@ def _create_row(
 
     row = [
         segment_id,
-        g.user_info.login if g.user_info is not None else None,
-        created_at if file_info is not None else None,
+        user_name if user_name is not None else file_info.user_id,
+        updated_at,
         begin_timestamp if left_timestamp is not None else None,
         end_timestamp if right_timestamp is not None else None,
         attrs_str if attrs_str is not None else None,

@@ -8,3 +8,4 @@ card = Card(
     "All created segments will be saved as json files in the appropriate folders for each pair of videos.",
     content=folder_container,
 )
+card.lock(message="Please select datasets first.")

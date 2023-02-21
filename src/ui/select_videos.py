@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import supervisely as sly
-from supervisely.app.widgets import Card, Table, Button
+from supervisely.app.widgets import Card, Container, Table, Button
 from supervisely._utils import abs_url
 
 import src.globals as g
@@ -26,6 +26,9 @@ columns = [COL_ID, COL_VIDEO, COL_DURATION, COL_FRAMES, COL_SET_LEFT, COL_SET_RI
 lines = None
 table = Table(fixed_cols=2, width="100%")
 
+extra_table = Table(fixed_cols=2, width="100%")
+extra_table.hide()
+
 START_LOCK_MESSAGE = "Select labeling tag on step 2️⃣"
 LABELING_LOCK_MESSAGE = "Stop tagging for current video pair before select another videos"
 
@@ -36,25 +39,25 @@ card = Card(
     "2️⃣ Select left and right video",
     "Select different videos for left and right panels. To mark segments on single video just select same video for both panels",
     collapsable=True,
-    content=table,
+    content=Container(widgets=[table, extra_table]),
     content_top_right=reselect_pair_btn,
     lock_message=START_LOCK_MESSAGE,
 )
+card.lock(message="Please select datasets first")
 
 
-def build_table():
-    global lines, table
-    if lines is None:
-        lines = []
+def build_table(table: sly.app.widgets.Table, dataset_id):
+    global lines
+    lines = []
     status_tag_meta = g.get_status_tag()
     table.loading = True
-    videos = g.api.video.get_list(g.dataset_id)
+    videos = g.api.video.get_list(dataset_id)
     for info in videos:
         tag_collection = sly.VideoTagCollection.from_api_response(
             info.tags, g.project_meta.tag_metas
         )
         status_tag = tag_collection.get_single_by_name(status_tag_meta.name)
-        labeling_url = sly.video.get_labeling_tool_url(g.dataset_id, info.id)
+        labeling_url = sly.video.get_labeling_tool_url(dataset_id, info.id)
         lines.append(
             [
                 info.id,
@@ -73,6 +76,66 @@ def build_table():
 
 @table.click
 def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
+    _set_video(datapoint)
+
+    _process_both_videos_selected()
+
+
+@extra_table.click
+def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
+    _set_video(datapoint)
+
+    _process_both_videos_selected()
+
+
+def set_video_status(
+    video_id: int,
+    existing_tags: sly.VideoTagCollection,
+    value,
+    update=False,
+):
+    curr_table = None
+    if video_id in [vid.id for vid in g.api.video.get_list(g.dataset_id)]:
+        curr_table = table
+    if g.extra_dataset_id and video_id in [
+        vid.id for vid in g.api.video.get_list(g.extra_dataset_id)
+    ]:
+        curr_table = extra_table
+    status_tag = g.get_status_tag()
+    existing_tag = existing_tags.get_single_by_name(status_tag.name)
+    if existing_tag is None:
+        tag = sly.VideoTag(status_tag, value)
+        g.api.video.tag.add(video_id, tag)
+        curr_table.update_cell_value(COL_ID, video_id, COL_STATUS, value)
+    elif update is True:
+        g.api.video.tag.update_value(existing_tag.sly_id, value)
+        curr_table.update_cell_value(COL_ID, video_id, COL_STATUS, value)
+
+
+@reselect_pair_btn.click
+def reselect_video_pair():
+    global pairs_dir_name
+    if pairs_dir_name is not None:
+        sly.fs.clean_dir(pairs_dir_name)
+    tagging.card.hide()
+    tagging.start_tagging_btn.hide()
+    tagging.mark_segment_btn.hide()
+    tagging.show_segments_btn.show()
+    tagging.show_segments_btn.disable()
+    tagging.help_text.show()
+    tagging.left_video.card.lock()
+    tagging.right_video.card.lock()
+    tagging.done_tagging_btn.hide()
+    tagging.close_pair_btn.hide()
+    card.uncollapse()
+    card.unlock()
+    reselect_pair_btn.hide()
+    tagging.start_tagging_btn.hide()
+    tagging.mark_segment_btn.hide()
+    attrs.card.hide()
+
+
+def _set_video(datapoint: sly.app.widgets.Table.ClickedDataPoint):
     if datapoint.button_name is None:
         return
     video_id = datapoint.row[COL_ID]
@@ -95,6 +158,8 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
         right_video.sync_btn.show()
         right_video.card.unlock()
 
+
+def _process_both_videos_selected():
     global pairs_dir_name
     if left_video.player.url is not None and right_video.player.url is not None:
         tagging.help_text.hide()
@@ -105,43 +170,27 @@ def handle_table_button(datapoint: sly.app.widgets.Table.ClickedDataPoint):
         tagging.mark_segment_btn.hide()
         left_video_id = g.choosed_videos["left_video"].id
         right_video_id = g.choosed_videos["right_video"].id
+        left_video_info = g.api.image.get_info_by_id(left_video_id)
+        right_video_info = g.api.image.get_info_by_id(right_video_id)
+        ds_dir_name = None
+        if left_video_info.dataset_id == right_video_info.dataset_id:
+            ds_dir_name = f"dataset-{left_video_info.dataset_id}"
+        else:
+            ds_dir_name = f"datasets-{g.dataset_id}-{g.extra_dataset_id}"
+            reversed_ds_dir_name = f"datasets-{g.extra_dataset_id}-{g.dataset_id}"
+            reversed_ds_dir_path = os.path.join(f.pr_path, reversed_ds_dir_name)
+            if g.api.file.dir_exists(g.team_id, reversed_ds_dir_path):
+                ds_dir_name = reversed_ds_dir_name
+        f.ds_path = os.path.join(f.pr_path, ds_dir_name)
+        if ds_dir_name not in os.listdir(f.pr_path):
+            os.mkdir(f.ds_path)
+        else:
+            sly.fs.remove_dir(f.ds_path)
+            os.mkdir(f.ds_path)
+
         pairs_dir_name = os.path.join(f.ds_path, f"video-pair-{left_video_id}-{right_video_id}")
 
         if f"video-pair-{left_video_id}-{right_video_id}" not in os.listdir(f.ds_path):
             os.mkdir(pairs_dir_name)
         if not g.api.file.dir_exists(g.team_id, pairs_dir_name):
             g.api.file.upload_directory(g.team_id, pairs_dir_name, pairs_dir_name)
-
-
-def set_video_status(video_id, existing_tags: sly.VideoTagCollection, value, update=False):
-    status_tag = g.get_status_tag()
-    existing_tag = existing_tags.get_single_by_name(status_tag.name)
-    if existing_tag is None:
-        tag = sly.VideoTag(status_tag, value)
-        g.api.video.tag.add(video_id, tag)
-        table.update_cell_value(COL_ID, video_id, COL_STATUS, value)
-    elif update is True:
-        g.api.video.tag.update_value(existing_tag.sly_id, value)
-        table.update_cell_value(COL_ID, video_id, COL_STATUS, value)
-
-
-@reselect_pair_btn.click
-def reselect_video_pair():
-    if pairs_dir_name is not None:
-        sly.fs.clean_dir(pairs_dir_name)
-    tagging.card.hide()
-    tagging.start_tagging_btn.hide()
-    tagging.mark_segment_btn.hide()
-    tagging.show_segments_btn.show()
-    tagging.show_segments_btn.disable()
-    tagging.help_text.show()
-    tagging.left_video.card.lock()
-    tagging.right_video.card.lock()
-    tagging.done_tagging_btn.hide()
-    tagging.close_pair_btn.hide()
-    card.uncollapse()
-    card.unlock()
-    reselect_pair_btn.hide()
-    tagging.start_tagging_btn.hide()
-    tagging.mark_segment_btn.hide()
-    attrs.card.hide()
