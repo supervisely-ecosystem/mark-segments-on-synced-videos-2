@@ -42,7 +42,7 @@ help_text = Text(
 help_block = Flexbox([help_text], center_content=True)
 
 COL_ID = "Segment ID".upper()
-COL_USER = "User ID".upper()
+COL_USER = "User".upper()
 COL_UPDATED_AT = "Updated at".upper()
 COL_BEGIN = "Begin (left)".upper()
 COL_END = "End (right)".upper()
@@ -142,6 +142,7 @@ def create_segment():
             "right": right_timestamp,
         }
         updated_at = datetime.datetime.now().strftime("%d %B %Y  %H:%M:%S")
+        created_at = datetime.datetime.now().strftime("%d %B %Y  %H:%M:%S")
         user_name = g.user_info.login
 
         data = {
@@ -156,13 +157,14 @@ def create_segment():
                 "timestamp": right_timestamp,
             },
             "tags": [],
+            "created_at": created_at,
             "updated_at": updated_at,
             "user_name": user_name,
         }
 
         with io.open(new_segment_file, "w", encoding="utf-8") as file:
             str_ = json.dumps(
-                data, indent=4, sort_keys=True, separators=(",", ": "), ensure_ascii=False
+                data, indent=4, separators=(",", ": "), ensure_ascii=False
             )
             file.write(str(str_))
 

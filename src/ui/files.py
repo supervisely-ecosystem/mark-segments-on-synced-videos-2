@@ -40,13 +40,11 @@ def create_ds_dir():
     ds_infos = [g.dataset_info]
     ds_ids = [g.dataset_id]
     ds_names = [g.dataset_info.name]
-    videos_count = g.dataset_info.items_count
     ds_dir_name = f"dataset-{g.dataset_id}"
     if g.extra_dataset_id:
         ds_infos.append(g.extra_dataset_info)
         ds_ids.append(g.extra_dataset_id)
         ds_names.append(g.extra_dataset_info.name)
-        videos_count += g.extra_dataset_info.items_count
         ds_dir_name = f"datasets-{g.dataset_id}-{g.extra_dataset_id}"
         reversed_ds_dir_name = f"datasets-{g.extra_dataset_id}-{g.dataset_id}"
         reversed_ds_dir_path = os.path.join(pr_path, reversed_ds_dir_name)

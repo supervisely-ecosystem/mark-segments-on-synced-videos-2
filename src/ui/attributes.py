@@ -69,7 +69,7 @@ def set_tags():
 
         with io.open(segment_filepath, "w", encoding="utf-8") as f:
             str_ = json.dumps(
-                data, indent=4, sort_keys=True, separators=(",", ": "), ensure_ascii=False
+                data, indent=4, separators=(",", ": "), ensure_ascii=False
             )
             f.write(str(str_))
 

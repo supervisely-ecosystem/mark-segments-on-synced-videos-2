@@ -170,6 +170,24 @@ def _process_both_videos_selected():
         tagging.mark_segment_btn.hide()
         left_video_id = g.choosed_videos["left_video"].id
         right_video_id = g.choosed_videos["right_video"].id
+        left_video_info = g.api.image.get_info_by_id(left_video_id)
+        right_video_info = g.api.image.get_info_by_id(right_video_id)
+        ds_dir_name = None
+        if left_video_info.dataset_id == right_video_info.dataset_id:
+            ds_dir_name = f"dataset-{left_video_info.dataset_id}"
+        else:
+            ds_dir_name = f"datasets-{g.dataset_id}-{g.extra_dataset_id}"
+            reversed_ds_dir_name = f"datasets-{g.extra_dataset_id}-{g.dataset_id}"
+            reversed_ds_dir_path = os.path.join(f.pr_path, reversed_ds_dir_name)
+            if g.api.file.dir_exists(g.team_id, reversed_ds_dir_path):
+                ds_dir_name = reversed_ds_dir_name
+        f.ds_path = os.path.join(f.pr_path, ds_dir_name)
+        if ds_dir_name not in os.listdir(f.pr_path):
+            os.mkdir(f.ds_path)
+        else:
+            sly.fs.remove_dir(f.ds_path)
+            os.mkdir(f.ds_path)
+
         pairs_dir_name = os.path.join(f.ds_path, f"video-pair-{left_video_id}-{right_video_id}")
 
         if f"video-pair-{left_video_id}-{right_video_id}" not in os.listdir(f.ds_path):

@@ -26,10 +26,6 @@ choosed_videos = {
     "left_video": None,
     "right_video": None,
 }
-choosed_tables = {
-    "left_video": None,
-    "right_video": None,
-}
 
 MISSED_ENTRY = "Missed entry"
 ABANDONED_QUEUE = "Abandoned queue"
