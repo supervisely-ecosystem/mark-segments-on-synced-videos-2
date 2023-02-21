@@ -17,7 +17,7 @@ left_ds_thumbnail.hide()
 right_ds_thumbnail = DatasetThumbnail(show_project_name=False)
 right_ds_thumbnail.hide()
 
-same_ds_checkbox = Checkbox(content="Use videos from one dataset", checked=True)
+same_ds_checkbox = Checkbox(content="Use videos from single dataset", checked=True)
 
 select_ds_btn = Button("OK")
 reselect_ds_btn = Button("Select other datasets")
