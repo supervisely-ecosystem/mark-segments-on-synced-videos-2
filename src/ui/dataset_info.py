@@ -45,6 +45,8 @@ def check_right_selector(value):
 
 @select_ds_btn.click
 def select_dataset():
+    if not select_left_ds.get_selected_id():
+        return
     same_ds_checkbox.hide()
     g.dataset_id = select_left_ds.get_selected_id()
     g.dataset_info = g.api.dataset.get_info_by_id(g.dataset_id, raise_error=True)
