@@ -32,8 +32,9 @@ App assigns to segments identifiers, attributes (tags), timestamps (for left and
 
 **Updates:**
 -  `v1.0.10` - added new info widget that shows where segments are stored in Team Files for selected video pair.
--  `v1.0.11` -  added video control buttons for easy video navigation.
--  `v1.0.12` -  changed table sorting settings. Added loading videos from multiple datasets.
+-  `v1.0.11` - added video control buttons for easy video navigation.
+-  `v1.0.12` - changed table sorting settings. Added loading videos from multiple datasets.
+-  `v1.0.13` - updated the app launching settings.
 
 # How to use
 
