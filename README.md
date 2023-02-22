@@ -38,10 +38,13 @@ App assigns to segments identifiers, attributes (tags), timestamps (for left and
 # How to use
 
 0. **Add project tags to the project.** You can create all type of project tags: `none`, `any string`, `any number` and `one of string`. All created tags can be used in the app to add segment attributes (except technical tag `status-segments-on-synced-videos`).
-1. Run application from the context menu of video dataset
+    > It is recommended not to change existing tags. To use the tags in the app correctly, you should prepare tags before launching the app. 
+    > You can also add new tags later (don’t use existing or removed tag names). Just restart the app to use created tags.
+
+1. Run app from Ecosystem or video project / video dataset context menu.
 2. Open app
-3. **Step 1** shows the information about selected dataset with links to project / dataset.
-4. **Step 2** it is needed to select left and right video by clicking on corresponding buttons in videos table.
+3. **Step 1** Select one or two datasets to load videos from them. After selecting datasets, it shows the information about selected dataset (or datasets) and a path to segments stored in Team files. 
+4. **Step 2** It is needed to select left and right video by clicking on corresponding buttons in videos table.
 5. Once videos are selected press `SHOW ALL SEGMENTS` button to preview and manage existing segments.
 6. Press `START SEGMENTS TAGGING` button to start tagging, i.e. create or delete tags segments.
 7. On videos table at **Step 2** there is also column `STATUS` that helps to navigate what videos are finished and what are in progress (press `MARK VIDEOS AS DONE` button).
@@ -50,7 +53,6 @@ App assigns to segments identifiers, attributes (tags), timestamps (for left and
 10. Stop the app manually.
 
 
-> If you perform some tags modification during working with app, just restart it. All created segments will be saved in team files and can be used in the next time the application will be launched.
 
 **Structure of folders in Team files in which segments will be stored:**
 ```
@@ -63,6 +65,12 @@ TEAM FILES
 │           │   │   ├── video-pair-<left_video_id>-<right_video_id>
 │           │   │   │   ├──segment-1.json 
 │           │   │   │   ├──segment-2.json 
+│           │   │   │   └── ...
+│           │   │   ├── ...
+│           │   ├── datasets-<first_dataset_id>-<second_dataset_id>
+│           │   │   ├── video-pair-<left_video_id>-<right_video_id>
+│           │   │   │   ├──segment-3.json 
+│           │   │   │   ├──segment-4.json 
 │           │   │   │   └── ...
 │           │   │   ├── ...
 │           │   └── ...
@@ -86,7 +94,10 @@ TEAM FILES
         {
             "name": "Missed entry" 
         }
-    ]
+    ],
+    "created_at": "20 February 2023  07:15:20",
+    "updated_at": "20 February 2023  07:34:47",
+    "user_name": "admin"
 }
 ```
 
