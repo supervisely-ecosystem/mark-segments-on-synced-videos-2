@@ -7,7 +7,7 @@
   "icon": "https://user-images.githubusercontent.com/12828725/211641974-b6e0fb96-9aad-4453-a3a9-d8c5f7de19d2.png",
   "poster": "https://user-images.githubusercontent.com/115161827/211619537-9c5cda6a-788c-4baa-b27e-6a6800e6fdbe.png?q=1",
   "context_menu": {
-    "target": ["videos_project"]
+    "target": ["videos_project", "videos_dataset"]
   },
   "min_agent_version": "6.6.7",
   "min_instance_version": "6.5.38",
