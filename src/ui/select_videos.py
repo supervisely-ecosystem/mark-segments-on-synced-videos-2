@@ -144,17 +144,21 @@ def _set_video(datapoint: sly.app.widgets.Table.ClickedDataPoint):
     video_type = video_info.file_meta["mime"]
     if datapoint.button_name == COL_SET_LEFT:
         g.choosed_videos["left_video"] = video_info
+        left_video.player.hide_mask()
+        left_video.draw_figures_checkbox.uncheck()
         left_video.player.set_video(url=video_url, mime_type=video_type)
         left_video.preview.set_video_id(video_id)
         left_video.preview.show()
-        left_video.navigation_field.show()
+        left_video.video_settings_container.show()
         left_video.card.unlock()
     elif datapoint.button_name == COL_SET_RIGHT:
         g.choosed_videos["right_video"] = video_info
+        right_video.player.hide_mask()
+        right_video.draw_figures_checkbox.uncheck()
         right_video.player.set_video(url=video_url, mime_type=video_type)
         right_video.preview.set_video_id(video_id)
         right_video.preview.show()
-        right_video.navigation_field.show()
+        right_video.video_settings_container.show()
         right_video.sync_btn.show()
         right_video.card.unlock()
 
