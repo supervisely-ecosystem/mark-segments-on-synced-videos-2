@@ -52,12 +52,13 @@ App assigns to segments identifiers, attributes (tags), timestamps (for left and
 5. After selecting the videos, click on the `draw regions on video` button to display a mask with figures.
 
    > Here is the algorithm for creating masks with regions on a video:
-   >
-   > 1. Create the required number of classes (as many as the number of region names needed).
-   > 2. Open [Supervisely video labeling tool](https://ecosystem.supervise.ly/apps/video-labeling-tool?_ga=2.61496805.83358356.1676836201-1574751671.1670221597).
-   > 3. Select the class with the required region name.
-   > 4. Draw the required number of regions on the first frame of the video."
-   > 5. If you created new classes, you may need to restart the app for the changes to take effect.
+    >
+    > a. Create the required number of classes (as many as the number of region names needed).
+    > b. Open [Supervisely video labeling tool](https://ecosystem.supervise.ly/apps/video-labeling-tool?_ga=2.61496805.83358356.1676836201-1574751671.1670221597).
+    > c. Select the class with the required region name.
+    > d. Draw the required number of regions on the first frame of the video."
+    > e. If you created new classes, you may need to restart the app for the changes to take effect.
+
 6. Press `SHOW ALL SEGMENTS` button to preview and manage existing segments.
 7. Press `START SEGMENTS TAGGING` button to start tagging, i.e. create or delete tags segments.
 8. On videos table at **Step 2** there is also column `STATUS` that helps to navigate which videos are finished and which are in progress (press `MARK VIDEOS AS DONE` button).
