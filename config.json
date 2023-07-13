@@ -4,6 +4,7 @@
   "version": "2.0.0",
   "description": "Tag segments (begin and end) with custom attributes on single or multiple videos in dual-panel view",
   "categories": ["videos", "labeling"],
+  "docker_image": "supervisely/base-py-sdk:6.72.70",
   "icon": "https://user-images.githubusercontent.com/12828725/211641974-b6e0fb96-9aad-4453-a3a9-d8c5f7de19d2.png",
   "poster": "https://user-images.githubusercontent.com/115161827/211619537-9c5cda6a-788c-4baa-b27e-6a6800e6fdbe.png?q=1",
   "context_menu": {

@@ -14,7 +14,7 @@ python3 -m venv .venv && \
 source .venv/bin/activate && \
 
 echo "Install requirements..." && \
-pip3 install -r requirements.txt && \
+pip3 install -r dev_requirements.txt && \
 
 echo "Testing imports, please wait a minute ..." && \
 python -c "import supervisely as sly" && \
