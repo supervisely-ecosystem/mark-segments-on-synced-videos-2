@@ -1,17 +1,23 @@
 {
-  "type": "app",
-  "name": "Mark attributed segments on multi-camera videos",
-  "version": "2.0.0",
-  "description": "Tag segments (begin and end) with custom attributes on single or multiple videos in dual-panel view",
-  "categories": ["videos", "labeling"],
-  "docker_image": "supervisely/base-py-sdk:6.72.70",
-  "icon": "https://user-images.githubusercontent.com/12828725/211641974-b6e0fb96-9aad-4453-a3a9-d8c5f7de19d2.png",
-  "poster": "https://user-images.githubusercontent.com/115161827/211619537-9c5cda6a-788c-4baa-b27e-6a6800e6fdbe.png?q=1",
-  "context_menu": {
-    "target": ["videos_project", "videos_dataset"]
-  },
-  "min_agent_version": "6.6.7",
-  "min_instance_version": "6.5.38",
-  "entrypoint": "python -m uvicorn src.main:app --host 0.0.0.0 --port 8000",
-  "port": 8000
+    "type": "app",
+    "name": "Mark attributed segments on multi-camera videos",
+    "version": "2.0.0",
+    "description": "Tag segments (begin and end) with custom attributes on single or multiple videos in dual-panel view",
+    "categories": [
+        "videos",
+        "labeling"
+    ],
+    "docker_image": "supervisely/labeling:0.0.1",
+    "icon": "https://user-images.githubusercontent.com/12828725/211641974-b6e0fb96-9aad-4453-a3a9-d8c5f7de19d2.png",
+    "poster": "https://user-images.githubusercontent.com/115161827/211619537-9c5cda6a-788c-4baa-b27e-6a6800e6fdbe.png?q=1",
+    "context_menu": {
+        "target": [
+            "videos_project",
+            "videos_dataset"
+        ]
+    },
+    "min_agent_version": "6.6.7",
+    "min_instance_version": "6.5.38",
+    "entrypoint": "python -m uvicorn src.main:app --host 0.0.0.0 --port 8000",
+    "port": 8000
 }
