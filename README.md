@@ -11,7 +11,7 @@
   <a href="#Demo">Screenshot</a>
 </p>
 
-[![](https://img.shields.io/badge/supervisely-ecosystem-brightgreen)](../../../../supervisely-ecosystem/mark-segments-on-synced-videos-2)
+[![](https://img.shields.io/badge/supervisely-ecosystem-brightgreen)](https://ecosystem.supervisely.com/apps/supervisely-ecosystem/mark-segments-on-synced-videos-2)
 [![](https://img.shields.io/badge/slack-chat-green.svg?logo=slack)](https://supervisely.com/slack)
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/supervisely-ecosystem/mark-segments-on-synced-videos-2)
 [![views](https://app.supervisely.com/img/badges/views/supervisely-ecosystem/mark-segments-on-synced-videos-2)](https://supervisely.com)
@@ -54,7 +54,7 @@ App assigns to segments identifiers, attributes (tags), timestamps (for left and
     > Here is the algorithm for creating masks with regions on a video:
     >
     > 1. Create the required number of classes (as many as the number of region names needed).
-    > 2. Open [Supervisely video labeling tool](../../../../supervisely-ecosystem/video-labeling-tool?_ga=2.61496805.83358356.1676836201-1574751671.1670221597).
+    > 2. Open [Supervisely video labeling tool](https://ecosystem.supervisely.com/apps/video-labeling-tool?_ga=2.61496805.83358356.1676836201-1574751671.1670221597).
     > 3. Select the class with required name and draw regions **on the first frame of the video.**
     > 4. If you created new classes, you may need to restart the app for the changes to take effect.
 
