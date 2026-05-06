@@ -17,7 +17,7 @@
     ]
   },
   "min_agent_version": "6.6.7",
-  "min_instance_version": "6.9.4",
+  "instance_version": "6.15.60",
   "entrypoint": "python -m uvicorn src.main:app --host 0.0.0.0 --port 8000",
   "port": 8000
 }
